@@ -48,7 +48,7 @@ block main
                     tbody 
                         each item, index in records
                             tr 
-                                td #{index + 1}
+                                td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 td
                                     img(
                                         src=item.avatar 
@@ -65,12 +65,16 @@ block main
                                         a(
                                             href="javascript:;"
                                             data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
                                             class = "badge badge-success"
                                         ) Hoạt động
                                     else
                                         a(
                                             href="javascript:;"
                                             data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
                                             class="badge badge-danger"
                                         ) Dừng hoạt động
                                     
@@ -88,5 +92,12 @@ block main
                                         data-id = item.id
                                         button-delete
                                     ) Xóa
-    
+
     +pagination(pagination)
+
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/users/change-status`
+    )
