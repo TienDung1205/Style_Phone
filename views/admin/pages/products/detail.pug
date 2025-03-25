@@ -1,0 +1,105 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
+
+block main 
+    +alert-error(5000)
+    +alert-success(3000)
+    
+    h1(class="mb-4") #{product.title}
+
+    if(product.title)
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                value=product.title
+                required
+                readonly
+            )
+    div(class="form-group")
+        label(for="product_category_id") Danh mục
+        select(
+            name="product_category_id"
+            id="product_category_id"
+            class="form-control"
+        ) 
+            option(value="") -- Chọn danh mục --
+            if(category)
+                +select-tree(category, 1, product.product_category_id) 
+    if(product.description)
+        div(class="form-group")
+            label(for="desc") Mô tả
+            textarea(
+                class="form-control"
+                id="desc"
+                name="description"
+                rows="5"
+                readonly
+            ) #{product.description}
+    
+    if(product.price)
+        div(class="mb-4")
+            span Giá :
+            span(class="text-success font-weight-bold fs-6 ml-2") #{product.price.toLocaleString('vi-VN')}đ
+    
+    if(product.discountPercentage)
+       div(class="mb-4")
+            span Giảm giá :
+            span(class="text-danger font-weight-bold fs-5 ml-2") #{product.discountPercentage.toLocaleString('vi-VN')}đ
+
+    if(product.stock)
+        div(class="form-group")
+            label(for="stock") Số lượng
+            input(
+                type="number"
+                class="form-control"
+                id="stock"
+                name="stock"
+                value=product.stock
+                min="0"
+                readonly
+            )
+    
+    div(
+        class="form-group"
+        upload-image
+    )
+        label(for="thumbnail") Ảnh
+        br
+        img(
+            src=product.thumbnail
+            upload-image-preview
+            class="image-preview"
+        )
+    
+    if(product.position)
+        div(class="form-group")
+            label(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                placeholder="Tự động tăng"
+                min="1"
+                value=product.position
+                readonly
+            )
+    if(product.status)
+        div(class="mb-4")
+            span Trạng thái:
+            if(product.status === 'active')
+                span(class = "badge badge-success ml-2") Hoạt động
+            else 
+                span(class = "badge badge-danger ml-2") Dừng hoạt động
+    
+    a(
+        href=`${prefixAdmin}/products/edit/${product.id}`
+        class="btn btn-warning btn-sm"
+    ) Chỉnh sửa sản phẩm
+
+    script(src="/admin/js/product.js") 

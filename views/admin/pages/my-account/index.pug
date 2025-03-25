@@ -1,0 +1,64 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+    +alert-error(5000)
+    +alert-success(3000)
+    
+    h1(class="mb-4") Thông tin cá nhân
+
+
+    if(user.avatar)
+        img(src=user.avatar width="150px" class="mb-3")
+    else 
+        img(src="/admin/images/avatar.png" width="150px" class="mb-3")
+    if(user.fullName)
+        div(class="form-group")
+            label(for="fullName") Họ tên
+            input(
+                type="text"
+                class="form-control"
+                id="fullName"
+                name="fullName"
+                value=user.fullName
+                required
+                readonly
+            )
+    if(user.email)
+        div(class="form-group")
+            label(for="email") Email
+            input(
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value=user.email
+                required
+                readonly
+            )
+    if(user.phone)
+        div(class="form-group")
+            label(for="phone") Số điện thoại
+            input(
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                value=user.phone
+                readonly
+            )
+    
+    if(user.status)
+        div(class="mb-4")
+            span Trạng thái:
+            if(user.status === 'active')
+                span(class = "badge badge-success ml-2") Hoạt động
+            else 
+                span(class = "badge badge-danger ml-2") Dừng hoạt động
+    
+    a(
+        href=`${prefixAdmin}/my-account/edit/`
+        class="btn btn-warning btn-sm"
+    ) Chỉnh sửa thông tin
+
+    script(src="/admin/js/product.js") 
