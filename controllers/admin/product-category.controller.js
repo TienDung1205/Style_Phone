@@ -9,28 +9,32 @@ const createTreeHelper = require("../../helpers/createTree");
 
 // [GET] /admin/products-category
 module.exports.index = async (req, res) =>{
-    const filterStatus = filterStatusHelper(req.query);
-
     let find = {
         deleted: false
     }
 
+    // filterStatus
+    const filterStatus = filterStatusHelper(req.query);
+    
     if(req.query.status){
         find.status = req.query.status;
     }
+    // End filterStatus
 
+    // Search
     const objectSearch = searchHelper(req.query);
 
     if(objectSearch.regex){
         find.title = objectSearch.regex;
     }
+    // End Search
 
     // Pagination
     const countRecords = await ProductCategory.countDocuments(find);
 
     let objectPagination = paginationHelper(
         {
-        limitItems: 4,
+        limitItems: 5,
         currentPage: 1
         },
         req.query,
@@ -39,7 +43,9 @@ module.exports.index = async (req, res) =>{
 
     // End Pagination
 
-    const records = await ProductCategory.find(find);
+    const records = await ProductCategory.find(find)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip);
 
     const newRecords = createTreeHelper.tree(records);
     

@@ -5,6 +5,7 @@ const systemConfig = require("../../config/system");
 
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
+const paginationHelper = require("../../helpers/pagination");
 
 // [GET] /admin/users
 module.exports.index = async (req, res) =>{
@@ -33,13 +34,31 @@ module.exports.index = async (req, res) =>{
         }
     // End Search
 
-    const records = await User.find(find).select("-password");
+    // Pagination
+    const countUsers = await User.countDocuments(find);
+
+    let objectPagination = paginationHelper(
+        {
+        limitItems: 5,
+        currentPage: 1
+        },
+        req.query,
+        countUsers
+    )
+
+    // End Pagination
+
+    const records = await User.find(find)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip)
+    .select("-password");
 
     res.render("admin/pages/users/index.pug", {
         pageTitle:"Danh sách khách hàng",
         records: records,
         filterStatus: filterStatus,
         keyword: objectSearch.keyword,
+        pagination: objectPagination
     });
 }
 

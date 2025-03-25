@@ -1,9 +1,13 @@
 extends ../../layouts/default
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/alert.pug
 
 block main 
-    
+    +alert-success(3000)
+    +alert-error(5000)
+
     h1(class = "mb-4") Trang khách hàng
 
     .card.mb-3 
@@ -84,3 +88,5 @@ block main
                                         data-id = item.id
                                         button-delete
                                     ) Xóa
+    
+    +pagination(pagination)
