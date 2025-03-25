@@ -2,6 +2,7 @@ extends ../../layouts/default
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 
 block main 
@@ -25,6 +26,7 @@ block main
             .card-body 
                 .row 
                     .col-10
+                        +form-change-multi(`${prefixAdmin}/users/change-multi?_method=PATCH`)
                     .col-2.text-right
                         a(
                             href=`${prefixAdmin}/users/create`
@@ -33,9 +35,12 @@ block main
 
                 table(
                     class="table table-hover table-sm"
+                    checkbox-multi
                 )
                     thead 
                         tr 
+                            th 
+                                input(type="checkbox" name="checkall")
                             th STT
                             th Avatar
                             th Họ tên
@@ -48,6 +53,12 @@ block main
                     tbody 
                         each item, index in records
                             tr 
+                                td 
+                                    input(
+                                        type="checkbox"
+                                        name="id"
+                                        value=item.id
+                                    )
                                 td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 td
                                     img(

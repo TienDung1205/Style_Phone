@@ -2,7 +2,7 @@ extends ../../layouts/default
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
-include ../../mixins/form-change-multi.pug
+include ../../mixins/form-change-multi-products.pug
 include ../../mixins/alert.pug
 
 block main 
@@ -27,7 +27,7 @@ block main
             .card-body 
                 .row 
                     .col-10
-                        +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                        +form-change-multi-products(`${prefixAdmin}/products/change-multi?_method=PATCH`)
                     .col-2.text-right
                         a(
                             href=`${prefixAdmin}/products/create`

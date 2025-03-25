@@ -128,7 +128,7 @@ if (formChangeMulti) {
         const typeChange = e.target.elements.type.value;
 
         if (typeChange == "delete-all") {
-            const isConfirm = confirm("Bạn có chắc chắn muốn xóa những sản phẩm này?");
+            const isConfirm = confirm("Bạn có chắc chắn muốn xóa những bản ghi này?");
 
             if (!isConfirm) {
                 return;
@@ -156,7 +156,7 @@ if (formChangeMulti) {
             inputIds.value = ids.join(", ");
             formChangeMulti.submit();
         } else {
-
+            alert("Vui lòng chọn ít nhất 1 bản ghi!");
         }
     })
 }
