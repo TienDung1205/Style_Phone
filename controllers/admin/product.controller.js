@@ -10,22 +10,25 @@ const createTreeHelper = require("../../helpers/createTree");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) =>{
-    
-    const filterStatus = filterStatusHelper(req.query);
-
     let find = {
         deleted: false
     }
+
+    // filterStatus
+    const filterStatus = filterStatusHelper(req.query);
     
     if(req.query.status){
         find.status = req.query.status;
     }
+    // End filterStatus
 
+    // Search
     const objectSearch = searchHelper(req.query);
 
     if(objectSearch.regex){
         find.title = objectSearch.regex;
     }
+    // End Search
 
     // Pagination
     const countProducts = await Product.countDocuments(find);

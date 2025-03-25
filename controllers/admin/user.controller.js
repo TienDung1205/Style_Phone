@@ -2,17 +2,39 @@ const md5 = require("md5");
 const User = require("../../models/user.model");
 
 const systemConfig = require("../../config/system");
+
+const filterStatusHelper = require("../../helpers/filterStatus");
+const searchHelper = require("../../helpers/search");
+
 // [GET] /admin/users
 module.exports.index = async (req, res) =>{
     let find = {
         deleted: false
     }
 
+    // filterStatus
+    const filterStatus = filterStatusHelper(req.query);
+    
+    if(req.query.status){
+        find.status = req.query.status;
+    }
+    // End filterStatus
+
+    // Search
+        const objectSearch = searchHelper(req.query);
+    
+        if(objectSearch.regex){
+            find.fullName = objectSearch.regex;
+        }
+    // End Search
+
     const records = await User.find(find).select("-password");
 
     res.render("admin/pages/users/index.pug", {
         pageTitle:"Danh sách khách hàng",
-        records: records
+        records: records,
+        filterStatus: filterStatus,
+        keyword: objectSearch.keyword,
     });
 }
 
