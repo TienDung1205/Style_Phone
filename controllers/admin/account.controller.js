@@ -57,11 +57,11 @@ module.exports.edit = async (req, res) =>{
         const data = await Account.findOne(find);
     
         res.render("admin/pages/accounts/edit.pug", {
-            pageTitle:"Chỉnh sửa tài khoản",
+            pageTitle:"Chỉnh sửa tài khoản nhân viên",
             data: data
         });
     } catch (error) {
-        req.flash('error', `Tài khoản không tồn tại!`);
+        req.flash('error', `Tài khoản nhân viên không tồn tại!`);
         res.redirect(`${systemConfig.prefixAdmin}/accounts`);
     }
 }
@@ -88,13 +88,6 @@ module.exports.editPatch = async (req, res) =>{
         
         await Account.updateOne({ _id: id }, req.body);
         req.flash("success", "Cập nhật tài khoản thành công!")
-
-        // try {
-        //     await Account.updateOne({ _id: id }, req.body);
-        //     req.flash("success", "Cập nhật thành công!")
-        // } catch (error) {
-        //     req.flash("error", "Cập nhật thất bại!")
-        // }
     }
 
     res.redirect(`back`);

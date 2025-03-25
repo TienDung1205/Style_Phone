@@ -7,7 +7,7 @@ block main
     
     h1(class="mb-4") #{pageTitle}
     form(
-        action=`${prefixAdmin}/accounts/edit/${data.id}?_method=PATCH`
+        action=`${prefixAdmin}/users/edit/${data.id}?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"
     )
