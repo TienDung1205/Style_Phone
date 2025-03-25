@@ -2,8 +2,7 @@ extends ../../layouts/default
 
 block main 
     
-    h1(class = "mb-4") Trang tài khoản
-
+    h1(class = "mb-4") Trang khách hàng
     //- table
     .card.mb-3 
         .card-header #{pageTitle}
@@ -12,7 +11,7 @@ block main
                     .col-10
                     .col-2.text-right
                         a(
-                            href=`${prefixAdmin}/accounts/create`
+                            href=`${prefixAdmin}/users/create`
                             class="btn btn-outline-success"
                         ) + Thêm mới
 
@@ -61,11 +60,11 @@ block main
                                     
                                 td 
                                     a(
-                                        href=`${prefixAdmin}/accounts/detail/${item.id}`
+                                        href=`${prefixAdmin}/users/detail/${item.id}`
                                         class="btn btn-primary btn-sm mr-1"
                                     ) Chi tiết
                                     a(
-                                        href=`${prefixAdmin}/accounts/edit/${item.id}`
+                                        href=`${prefixAdmin}/users/edit/${item.id}`
                                         class="btn btn-warning btn-sm mr-1"
                                     ) Sửa
                                     button(

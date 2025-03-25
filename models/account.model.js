@@ -11,9 +11,13 @@ const accountSchema = new mongoose.Schema(
             default: generate.generateRandomString(30)
         },
         phone: String,
+        address: String,
         avatar: String,
         role_id: String,
-        status: String,
+        status: {
+            type: String,
+            default: "active"
+        },
         deleted: {
             type: Boolean,
             default: false
