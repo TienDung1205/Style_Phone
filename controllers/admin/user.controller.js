@@ -22,3 +22,25 @@ module.exports.create = async (req, res) =>{
         pageTitle:"Thêm mới khách hàng"
     });
 }
+
+// [POST] /admin/users/createPost
+module.exports.createPost = async (req, res) =>{
+    const emailExist = await User.findOne({
+        email: req.body.email,
+        deleted: false
+    });
+    
+    if(emailExist){
+        req.flash("error", `Email ${req.body.email} đã tồn tại!`);
+        res.redirect("back");
+    }
+    else{
+        req.body.password = md5(req.body.password);
+
+        const record = new User(req.body);
+        await record.save();
+        
+        res.redirect(`${systemConfig.prefixAdmin}/users`);
+    }
+
+}

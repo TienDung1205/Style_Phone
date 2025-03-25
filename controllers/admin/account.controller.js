@@ -11,7 +11,7 @@ module.exports.index = async (req, res) =>{
     const records = await Account.find(find).select("-password");
 
     res.render("admin/pages/accounts/index.pug", {
-        pageTitle:"Danh sách tài khoản",
+        pageTitle:"Danh sách nhân viên",
         records: records
     });
 }
@@ -20,7 +20,7 @@ module.exports.index = async (req, res) =>{
 module.exports.create = async (req, res) =>{
 
     res.render("admin/pages/accounts/create.pug", {
-        pageTitle:"Thêm mới tài khoản"
+        pageTitle:"Thêm mới nhân viên"
     });
 }
 
