@@ -35,15 +35,16 @@ header.header
                         action=`/search`
                         method="GET"
                     )
-                        div(class="form-group d-flex mb-0")
-                        input(
-                            type="text"
-                            placeholder="Nhập từ khóa..."
-                            class="form control col-8"
-                            name="keyword"
-                            value=keyword
-                        )
-                        button(
-                            type="submit"
-                            class="btb btn-primary"
-                        ) Tìm kiếm
+                        .input-group 
+                            input(
+                                type="text"
+                                placeholder="Tìm kiếm"
+                                class="form-control"
+                                name="keyword"
+                                value=keyword
+                            )
+                            .input-group-append
+                                button(
+                                    class = "btn btn-success"
+                                    type="submit"
+                                ) Tìm kiếm
