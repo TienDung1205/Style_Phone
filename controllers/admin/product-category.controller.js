@@ -88,18 +88,6 @@ module.exports.changeMulti = async (req, res) =>{
             deletedAt: new Date()
         });
         req.flash('success', `Đã xóa thành công!`);
-    }
-    else if (type == "change-position") {
-        for (const item of ids) {
-            let [id, position] = item.split("-");
-            position = parseInt(position);
-
-            await ProductCategory.updateOne({ _id: id}, { 
-                position: position 
-            });
-            req.flash('success', `Thay đổi vị trí thành công!`);
-        }
-        
     }else{
         
     }

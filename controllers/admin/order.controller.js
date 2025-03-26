@@ -6,7 +6,8 @@ const systemConfig = require("../../config/system");
 // [GET] /admin/orders
 module.exports.index = async (req, res) =>{
 
-    const records = await Order.find({});
+    const records = await Order.find({})
+    .sort({ position: "desc"});
 
     res.render("admin/pages/orders/index.pug", {
         pageTitle:"Quản lý đặt hàng",

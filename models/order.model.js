@@ -21,6 +21,7 @@ const orderSchema = new mongoose.Schema(
             type: String,
             default: "processing"
         },
+        position: Number,
         deleted: {
             type: Boolean,
             default: false
