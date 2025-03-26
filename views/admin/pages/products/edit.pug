@@ -62,8 +62,12 @@ block main
                 name="description"
                 rows="5"
             ) #{product.description}
+        if(product.price)
+            div(class="mb-4")
+                span Giá :
+                span(class="text-success font-weight-bold fs-6 ml-2") #{product.price.toLocaleString('vi-VN')}đ
         div(class="form-group")
-            label(for="price") Giá
+            label(for="price") Thay đổi giá:
             input(
                 type="number"
                 class="form-control"
@@ -72,8 +76,12 @@ block main
                 value=product.price
                 min="0"
             )
+        if(product.discountPercentage)
+            div(class="mb-4")
+                span Giảm giá :
+                span(class="text-danger font-weight-bold fs-5 ml-2") #{product.discountPercentage.toLocaleString('vi-VN')}đ
         div(class="form-group")
-            label(for="discount") Giảm giá
+            label(for="discount") Thay đổi giảm giá:
             input(
                 type="number"
                 class="form-control"

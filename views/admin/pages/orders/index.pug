@@ -1,0 +1,61 @@
+extends ../../layouts/default
+include ../../mixins/alert.pug
+
+block main 
+    +alert-success(3000)
+    +alert-error(5000)
+
+    h1(class = "mb-4") #{pageTitle}
+
+    //- table
+    .card.mb-3 
+        .card-header #{pageTitle}
+            .card-body 
+                .row 
+                    .col-10
+                    .col-2.text-right
+                        
+
+                table(
+                    class="table table-hover table-sm"
+                    checkbox-multi
+                )
+                    thead 
+                        tr 
+                            th 
+                                input(type="checkbox" name="checkall")
+                            th STT
+                            th Khách hàng
+                            th Họ tên
+                            th Số điện thoại
+                            th Địa chỉ
+                            th Chỉnh sửa
+
+                    tbody 
+                        each item, index in records
+                            tr 
+                                td 
+                                    input(
+                                        type="checkbox"
+                                        name="id"
+                                        value=item.id
+                                    )
+                                td #{index + 1}
+                                td #{item.user_id}
+                                td #{item.userInfo.fullName}
+                                td #{item.userInfo.phone}
+                                td #{item.userInfo.address}
+                                td 
+                                    a(
+                                        href=`${prefixAdmin}/orders/detail/${item.id}`
+                                        class="btn btn-primary btn-sm mr-1"
+                                    ) Chi tiết
+                                    a(
+                                        href=`${prefixAdmin}/orders/edit/${item.id}`
+                                        class="btn btn-warning btn-sm mr-1"
+                                    ) Sửa
+                                    button(
+                                        class="btn btn-danger btn-sm"
+                                        data-id = item.id
+                                        button-delete
+                                    ) Xóa
