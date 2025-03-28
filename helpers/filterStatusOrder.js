@@ -1,28 +1,37 @@
 module.exports = (query) => {
-    let filterStatus = [
-        {
+    let filterStatus = [{
             name: "Tất cả",
             status: "",
             class: ""
         },
         {
-            name: "Hoạt động",
-            status: "active",
+            name: "Thành công",
+            status: "success",
             class: ""
         },
         {
-            name: "Dừng hoạt động",
-            status: "inactive",
+            name: "Đang vận chuyển",
+            status: "delivering",
+            class: ""
+        },
+        {
+            name: "Đang xử lý",
+            status: "processing",
+            class: ""
+        },
+        {
+            name: "Đã hủy",
+            status: "canceled",
             class: ""
         }
     ]
-    
-    if(query.status){
+
+    if (query.status) {
         const index = filterStatus.findIndex(item => item.value === query.status);
         if (index !== -1) { // Kiểm tra xem index có hợp lệ không
             filterStatus[index].class = "active";
         }
-    }else{
+    } else {
         const index = filterStatus.findIndex(item => {
             return item.status == "";
         })

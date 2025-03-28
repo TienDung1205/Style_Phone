@@ -1,11 +1,21 @@
 extends ../../layouts/default
 include ../../mixins/alert.pug
+include ../../mixins/filter-status.pug
 
 block main 
     +alert-success(3000)
     +alert-error(5000)
 
     h1(class = "mb-4") Trang đặt hàng
+
+    .card.mb-3 
+        .card-header Bộ lọc và Tìm kiếm 
+        .card-body 
+            .row
+                .col-6
+                    +filter-status(filterStatusOrder)
+                .col-6
+                //-     +search(keyword)
 
     //- table
     .card.mb-3 
@@ -29,6 +39,7 @@ block main
                             th Họ tên
                             th Số điện thoại
                             th Địa chỉ
+                            th Trạng thái
                             th Chỉnh sửa
 
                     tbody 
@@ -41,10 +52,43 @@ block main
                                         value=item.id
                                     )
                                 td #{index + 1}
-                                td #{item.user_id}
+                                td #{item.email ? item.email : ""}
                                 td #{item.userInfo.fullName}
                                 td #{item.userInfo.phone}
                                 td #{item.userInfo.address}
+                                td 
+                                    if item.status == "success"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class = "badge badge-success"
+                                        ) Thành công
+                                    else if item.status == "canceled"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class="badge badge-danger"
+                                        ) Đã hủy
+                                    else if item.status == "processing"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class="badge badge-warning"
+                                        ) Đang xử lý
+                                    else if item.status == "delivering"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class="badge badge-primary"
+                                        ) Đang vận chuyển
                                 td 
                                     a(
                                         href=`${prefixAdmin}/orders/detail/${item.id}`
