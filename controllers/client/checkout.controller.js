@@ -49,16 +49,18 @@ module.exports.order = async (req, res) => {
     const products = [];
 
     for (const product of cart.products) {
-        const objectProduct = {
-            product_id: product.product_id,
-            price: 0,
-            discountPercentage: 0,
-            quantity: product.quantity
-        }
-
         const productInfo = await Product.findOne({
             _id: product.product_id
         }).select("price discountPercentage stock");
+
+        const objectProduct = {
+            product_id: product.product_id,
+            price: productInfo.price,
+            discountPercentage: productInfo.discountPercentage,
+            quantity: product.quantity
+        }
+
+        products.push(objectProduct);
 
         const newStock = productInfo.stock - product.quantity;
         await Product.updateOne({
@@ -69,16 +71,16 @@ module.exports.order = async (req, res) => {
             }
         });
 
-        objectProduct.price = productInfo.price;
-        objectProduct.discountPercentage = productInfo.discountPercentage;
-
-        products.push(objectProduct);
     }
 
     const orderInfo = {
         cart_id: cartId,
         userInfo: userInfo,
         products: products
+    }
+
+    if(cart.user_id){
+        orderInfo.user_id = cart.user_id;
     }
 
     const order = new Order(orderInfo);
