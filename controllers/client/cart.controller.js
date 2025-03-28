@@ -20,7 +20,7 @@ module.exports.index = async (req, res) => {
                 status: "active"
             }).select("title thumbnail slug price discountPercentage stock");
 
-            productInfo.newPrice = productsHelper.newPriceProduct(productInfo)
+            productInfo.newPrice = productsHelper.newPriceProduct(productInfo);
             
             item.productInfo = productInfo;
 
@@ -43,9 +43,10 @@ module.exports.index = async (req, res) => {
 //[POST] /cart/add/:productId
 module.exports.addPost = async (req, res) => {
     const productId = req.params.productId;
-    const quantity = parseInt(req.body.quantity);
+    let quantity = parseInt(req.body.quantity);
     const cartId = req.cookies.cartId;
 
+    // Xóa sản phẩm khỏi giỏ hàng
     if(quantity < 0){
         await Cart.updateOne({
             _id: cartId
@@ -53,9 +54,12 @@ module.exports.addPost = async (req, res) => {
             $pull: { products : { product_id : productId } }
         })
     
+        req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
+
         res.redirect("back");
         return;
     }
+    // End Xóa sản phẩm khỏi giỏ hàng
 
     const cart = await Cart.findOne({
         _id: cartId
@@ -64,9 +68,20 @@ module.exports.addPost = async (req, res) => {
     // console.log(cart.products);
 
     const existProductInCart = cart.products.find(item => item.product_id == productId);
+    // Số lượng tối đa của sản phẩm
+    const productInfo = await Product.findOne({
+        _id: productId
+    }).select("stock");
+    
+    //End Số lượng tối đa của sản phẩm
 
     if (existProductInCart) {
-        const quantityNew = quantity + existProductInCart.quantity;
+        // Cập nhật lại số lượng product trong giỏ hàng
+        let quantityNew = quantity + existProductInCart.quantity;
+        
+        if(quantityNew > productInfo.stock){
+            quantityNew = productInfo.stock
+        }
 
         await Cart.updateOne({
             _id: cartId,
@@ -77,6 +92,12 @@ module.exports.addPost = async (req, res) => {
             }
         })
     } else {
+        // Thêm mới product vào giỏ hàng
+
+        if(quantity > productInfo.stock){
+            quantity = productInfo.stock
+        }
+
         const objectCart = {
             product_id: productId,
             quantity: quantity
@@ -116,6 +137,7 @@ module.exports.update = async (req, res) => {
     const cartId = req.cookies.cartId;
     const productId = req.params.productId;
     let quantity = parseInt(req.params.quantity);
+    // Xóa sản phẩm khỏi giỏ hàng
     if(quantity <= 0){
         await Cart.updateOne({
             _id: cartId
@@ -124,11 +146,13 @@ module.exports.update = async (req, res) => {
         })
     
         req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
-    
+
         res.redirect("back");
         return;
     }
+    // End Xóa sản phẩm khỏi giỏ hàng
 
+    // Số lượng tối đa của sản phẩm
     const productInfo = await Product.findOne({
         _id: productId
     }).select("stock");
@@ -136,6 +160,7 @@ module.exports.update = async (req, res) => {
     if(quantity > productInfo.stock){
         quantity = productInfo.stock
     }
+    //End Số lượng tối đa của sản phẩm
     
     await Cart.updateOne({
         _id: cartId,
@@ -145,6 +170,8 @@ module.exports.update = async (req, res) => {
             "products.$.quantity": quantity
         }
     })
+
+    req.flash("success", "Cập nhật số lượng thành công");
 
     res.redirect("back");
 }

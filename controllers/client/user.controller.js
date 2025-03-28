@@ -240,7 +240,7 @@ module.exports.forgotPasswordPost = async (req, res) =>{
     // Gửi mã OTP cho email
     const subject = "Mã OTP xác minh lấy lại mật khẩu";
     const html = `
-        Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn. Hãy nhập mã này: <b>${otp}</b>
+        Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn tại StylePhone. Hãy nhập mã này: <b>${otp}</b>
         <hr>
         Thời gian hiệu lực là 2 phút.
     `
