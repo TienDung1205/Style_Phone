@@ -5,6 +5,8 @@ const User = require("../../models/user.model");
 const systemConfig = require("../../config/system");
 
 const filterStatusOrderHelper = require("../../helpers/filterStatusOrder");
+const searchHelper = require("../../helpers/search");
+const paginationHelper = require("../../helpers/pagination");
 
 // [GET] /admin/orders
 module.exports.index = async (req, res) =>{
@@ -18,6 +20,18 @@ module.exports.index = async (req, res) =>{
     }
     // End filterStatus
 
+    // Search
+    const objectSearch = searchHelper(req.query);
+
+    if(objectSearch.regex){
+        find.$or = [
+            { "userInfo.fullName": objectSearch.regex },
+            { "userInfo.phone": objectSearch.regex },
+            { "userInfo.address": objectSearch.regex }
+        ];
+    }
+    // End Search
+
     const records = await Order.find(find)
     .sort({ position: "desc"});
 
@@ -27,13 +41,14 @@ module.exports.index = async (req, res) =>{
                 _id: record.user_id
             }).select("-password")
 
-            record.email = user.email;
+            record.user = user;
         }
     }
 
     res.render("admin/pages/orders/index.pug", {
         pageTitle:"Quản lý đặt hàng",
         records: records,
-        filterStatusOrder: filterStatusOrder
+        filterStatusOrder: filterStatusOrder,
+        keyword: objectSearch.keyword
     });
 }

@@ -22,16 +22,16 @@ module.exports.index = async (req, res) =>{
     // End filterStatus
 
     // Search
-        const objectSearch = searchHelper(req.query);
-    
-        if(objectSearch.regex){
-            find.$or = [
-                { fullName: objectSearch.regex },
-                { phone: objectSearch.regex },
-                { email: objectSearch.regex },
-                { address: objectSearch.regex }
-            ];
-        }
+    const objectSearch = searchHelper(req.query);
+
+    if(objectSearch.regex){
+        find.$or = [
+            { fullName: objectSearch.regex },
+            { phone: objectSearch.regex },
+            { email: objectSearch.regex },
+            { address: objectSearch.regex }
+        ];
+    }
     // End Search
 
     // Pagination
