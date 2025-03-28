@@ -2,6 +2,7 @@ extends ../../layouts/default
 include ../../mixins/alert.pug
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
+include ../../mixins/pagination.pug
 
 block main 
     +alert-success(3000)
@@ -104,3 +105,5 @@ block main
                                         data-id = item.id
                                         button-delete
                                     ) Xóa
+
+    +pagination(pagination)

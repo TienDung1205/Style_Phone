@@ -32,7 +32,23 @@ module.exports.index = async (req, res) =>{
     }
     // End Search
 
+    // Pagination
+    const countOrders = await Order.countDocuments(find);
+ 
+    let objectPagination = paginationHelper(
+        {
+        limitItems: 10,
+        currentPage: 1
+        },
+        req.query,
+        countOrders
+    )
+
+    // End Pagination
+
     const records = await Order.find(find)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip)
     .sort({ position: "desc"});
 
     for (const record of records) {
@@ -49,6 +65,7 @@ module.exports.index = async (req, res) =>{
         pageTitle:"Quản lý đặt hàng",
         records: records,
         filterStatusOrder: filterStatusOrder,
-        keyword: objectSearch.keyword
+        keyword: objectSearch.keyword,
+        pagination: objectPagination
     });
 }
