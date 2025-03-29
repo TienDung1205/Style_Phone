@@ -10,4 +10,6 @@ const uploadCloud = require("../../middlewares/admin/uploadCloud.middleware")
 
 router.get('/', controller.index);
 
+router.patch('/change-multi', controller.changeMulti);
+
 module.exports = router;

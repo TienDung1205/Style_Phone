@@ -3,6 +3,7 @@ include ../../mixins/alert.pug
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi-orders.pug
 
 block main 
     +alert-success(3000)
@@ -23,38 +24,39 @@ block main
     .card.mb-3 
         .card-header #{pageTitle}
             .card-body 
-                .row 
-                    .col-10
-                    .col-2.text-right
+                +form-change-multi-orders(`${prefixAdmin}/orders/change-multi?_method=PATCH`)
                         
 
                 table(
                     class="table table-hover table-sm"
                     checkbox-multi
                 )
-                    thead 
-                        tr 
-                            th 
+                    thead
+                        tr
+                            th
                                 input(type="checkbox" name="checkall")
                             th STT
-                            th Email
+                            th Mã đơn hàng
+                            //- th Email
                             th Họ tên
                             th Số điện thoại
                             th Địa chỉ
                             th Trạng thái
+                            th Tổng tiền
                             th Chỉnh sửa
 
                     tbody 
                         each item, index in records
                             tr 
-                                td 
+                                td
                                     input(
                                         type="checkbox"
                                         name="id"
                                         value=item.id
                                     )
-                                td #{index + 1}
-                                td #{item.user ? (item.user.email ? item.user.email : "") : ""}
+                                td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
+                                td #{item.id}
+                                //- td #{item.user ? (item.user.email ? item.user.email : "") : ""}
                                 td #{item.userInfo.fullName}
                                 td #{item.userInfo.phone}
                                 td #{item.userInfo.address}
@@ -67,22 +69,6 @@ block main
                                             button-change-status
                                             class = "badge badge-success"
                                         ) Thành công
-                                    else if item.status == "canceled"
-                                        a(
-                                            href="javascript:;"
-                                            data-status=item.status
-                                            data-id=item.id
-                                            button-change-status
-                                            class="badge badge-danger"
-                                        ) Đã hủy
-                                    else if item.status == "processing"
-                                        a(
-                                            href="javascript:;"
-                                            data-status=item.status
-                                            data-id=item.id
-                                            button-change-status
-                                            class="badge badge-warning"
-                                        ) Đang xử lý
                                     else if item.status == "delivering"
                                         a(
                                             href="javascript:;"
@@ -91,6 +77,23 @@ block main
                                             button-change-status
                                             class="badge badge-primary"
                                         ) Đang vận chuyển
+                                    else if item.status == "processing"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class="badge badge-warning"
+                                        ) Đang xử lý
+                                    else if item.status == "canceled"
+                                        a(
+                                            href="javascript:;"
+                                            data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
+                                            class="badge badge-danger"
+                                        ) Đã hủy
+                                td #{item.totalPrice.toLocaleString('vi-VN')}đ
                                 td 
                                     a(
                                         href=`${prefixAdmin}/orders/detail/${item.id}`
@@ -107,3 +110,17 @@ block main
                                     ) Xóa
 
     +pagination(pagination)
+
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/orders/change-status`
+    )
+
+    form(
+        action=""
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/orders/delete`
+    )

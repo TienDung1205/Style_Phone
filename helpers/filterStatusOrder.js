@@ -27,8 +27,8 @@ module.exports = (query) => {
     ]
 
     if (query.status) {
-        const index = filterStatus.findIndex(item => item.value === query.status);
-        if (index !== -1) { // Kiểm tra xem index có hợp lệ không
+        const index = filterStatus.findIndex(item => item.status == query.status);
+        if (index != -1) { // Kiểm tra xem index có hợp lệ không
             filterStatus[index].class = "active";
         }
     } else {

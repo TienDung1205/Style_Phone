@@ -1,12 +1,14 @@
 const md5 = require("md5");
 const Order = require("../../models/order.model");
 const User = require("../../models/user.model");
+const Product = require("../../models/product.model");
 
 const systemConfig = require("../../config/system");
 
 const filterStatusOrderHelper = require("../../helpers/filterStatusOrder");
 const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
+const productsHelper = require("../../helpers/products");
 
 // [GET] /admin/orders
 module.exports.index = async (req, res) =>{
@@ -37,7 +39,7 @@ module.exports.index = async (req, res) =>{
  
     let objectPagination = paginationHelper(
         {
-        limitItems: 10,
+        limitItems: 4,
         currentPage: 1
         },
         req.query,
@@ -49,7 +51,7 @@ module.exports.index = async (req, res) =>{
     const records = await Order.find(find)
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip)
-    .sort({ position: "desc"});
+    // .sort({ position: "desc"});
 
     for (const record of records) {
         if(record.user_id){
@@ -59,6 +61,21 @@ module.exports.index = async (req, res) =>{
 
             record.user = user;
         }
+
+        if (record.products.length > 0) {
+            for (const item of record.products) {
+                item.newPrice = productsHelper.newPriceProduct(item); // newPrice
+
+                const productId = item.product_id;
+                const productInfo = await Product.findOne({
+                    _id: productId
+                }).select("title thumbnail slug");
+                item.productInfo = productInfo;
+                item.totalPrice = item.newPrice * item.quantity;
+            }
+        }
+    
+        record.totalPrice = record.products.reduce((sum, item) => sum + item.totalPrice, 0);
     }
 
     res.render("admin/pages/orders/index.pug", {
@@ -68,4 +85,28 @@ module.exports.index = async (req, res) =>{
         keyword: objectSearch.keyword,
         pagination: objectPagination
     });
+}
+
+// [PATCH] /admin/orders/change-multi
+module.exports.changeMulti = async (req, res) =>{
+    const type = req.body.type;
+    const ids = req.body.ids.split(", ");
+
+    if(type == "success"){
+        await Order.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }else if (type == "delivering") {
+        await Order.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }else if (type == "processing") {
+        await Order.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }else if (type == "canceled") {
+        await Order.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }else{
+        
+    }
+
+    res.redirect("back");
 }
