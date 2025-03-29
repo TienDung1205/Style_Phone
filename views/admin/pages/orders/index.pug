@@ -36,13 +36,14 @@ block main
                             th
                                 input(type="checkbox" name="checkall")
                             th STT
-                            th Mã đơn hàng
+                            //- th Mã đơn hàng
                             //- th Email
                             th Họ tên
                             th Số điện thoại
                             th Địa chỉ
                             th Trạng thái
                             th Tổng tiền
+                            th Ngày mua hàng
                             th Chỉnh sửa
 
                     tbody 
@@ -55,7 +56,7 @@ block main
                                         value=item.id
                                     )
                                 td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
-                                td #{item.id}
+                                //- td #{item.id}
                                 //- td #{item.user ? (item.user.email ? item.user.email : "") : ""}
                                 td #{item.userInfo.fullName}
                                 td #{item.userInfo.phone}
@@ -94,6 +95,7 @@ block main
                                             class="badge badge-danger"
                                         ) Đã hủy
                                 td #{item.totalPrice.toLocaleString('vi-VN')}đ
+                                td #{item.purchaseDate}
                                 td 
                                     a(
                                         href=`${prefixAdmin}/orders/detail/${item.id}`

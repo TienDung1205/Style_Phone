@@ -10,6 +10,8 @@ const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
 const productsHelper = require("../../helpers/products");
 
+const mongoose = require('mongoose');
+
 // [GET] /admin/orders
 module.exports.index = async (req, res) =>{
     let find = {};
@@ -66,16 +68,31 @@ module.exports.index = async (req, res) =>{
             for (const item of record.products) {
                 item.newPrice = productsHelper.newPriceProduct(item); // newPrice
 
-                const productId = item.product_id;
-                const productInfo = await Product.findOne({
-                    _id: productId
-                }).select("title thumbnail slug");
-                item.productInfo = productInfo;
+                // const productId = item.product_id;
+                // const productInfo = await Product.findOne({
+                //     _id: productId
+                // }).select("title thumbnail slug");
+                // item.productInfo = productInfo;
                 item.totalPrice = item.newPrice * item.quantity;
             }
         }
     
         record.totalPrice = record.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        const dateString = record.createdAt;
+        const date = new Date(dateString);
+
+        const formatter = new Intl.DateTimeFormat('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh', // Múi giờ Việt Nam
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        });
+
+        record.purchaseDate =  formatter.format(date); // Định dạng theo chuẩn Việt Nam
     }
 
     res.render("admin/pages/orders/index.pug", {
