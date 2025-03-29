@@ -115,6 +115,7 @@ module.exports.otpRegisterPost = async (req, res) =>{
     }
 
     const user = new User(objectUser);
+    user.tokenUser = generateHelper.generateRandomString(30);
     await user.save();
 
     req.flash("success", "Đăng ký thành công!");

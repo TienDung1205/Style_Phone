@@ -2,6 +2,8 @@ const md5 = require("md5");
 const Account = require("../../models/account.model");
 
 const systemConfig = require("../../config/system");
+
+const generateHelper = require("../../helpers/generate");
 // [GET] /admin/accounts
 module.exports.index = async (req, res) =>{
     let find = {
@@ -39,6 +41,7 @@ module.exports.createPost = async (req, res) =>{
         req.body.password = md5(req.body.password);
 
         const record = new Account(req.body);
+        record.token = generateHelper.generateRandomString(30);
         await record.save();
         
         res.redirect(`${systemConfig.prefixAdmin}/accounts`);

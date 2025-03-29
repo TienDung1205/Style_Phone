@@ -29,6 +29,7 @@ module.exports.index = async (req, res) =>{
 
     if(objectSearch.regex){
         find.$or = [
+            { code: objectSearch.regex },
             { "userInfo.fullName": objectSearch.regex },
             { "userInfo.phone": objectSearch.regex },
             { "userInfo.address": objectSearch.regex }
@@ -41,7 +42,7 @@ module.exports.index = async (req, res) =>{
  
     let objectPagination = paginationHelper(
         {
-        limitItems: 4,
+        limitItems: 10,
         currentPage: 1
         },
         req.query,

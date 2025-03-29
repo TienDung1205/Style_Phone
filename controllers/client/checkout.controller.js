@@ -2,6 +2,8 @@ const Order = require("../../models/order.model");
 const Cart = require("../../models/cart.model");
 const Product = require("../../models/product.model");
 
+const generateHelper = require("../../helpers/generate");
+
 const productsHelper = require("../../helpers/products");
 
 //[GET] /checkout/
@@ -84,6 +86,7 @@ module.exports.order = async (req, res) => {
     }
 
     const order = new Order(orderInfo);
+    order.code = generateHelper.generateRandomString(10);
     order.save();
 
     await Cart.updateOne({

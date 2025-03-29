@@ -7,6 +7,8 @@ const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
 
+const generateHelper = require("../../helpers/generate");
+
 // [GET] /admin/users
 module.exports.index = async (req, res) =>{
     let find = {
@@ -84,6 +86,7 @@ module.exports.createPost = async (req, res) =>{
         req.body.password = md5(req.body.password);
 
         const record = new User(req.body);
+        record.tokenUser = generateHelper.generateRandomString(30);
         await record.save();
         
         res.redirect(`${systemConfig.prefixAdmin}/users`);
