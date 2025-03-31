@@ -3,6 +3,7 @@ include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/alert.pug
+include ../../mixins/form-change-multi.pug
 
 block main
     +alert-success(3000)
@@ -26,6 +27,7 @@ block main
             .card-body 
                 .row 
                     .col-10
+                        +form-change-multi(`${prefixAdmin}/accounts/change-multi?_method=PATCH`)
                     .col-2.text-right
                         a(
                             href=`${prefixAdmin}/accounts/create`
@@ -34,21 +36,30 @@ block main
 
                 table(
                     class="table table-hover table-sm"
+                    checkbox-multi
                 )
-                    thead 
-                        tr 
+                    thead
+                        tr
+                            th
+                                input(type="checkbox" name="checkall")
                             th STT
                             th Avatar
                             th Họ tên
                             th Email
                             th Số điện thoại
                             //- th Địa chỉ
-                            th Trạng thái 
+                            th Trạng thái
                             th Chỉnh sửa
 
-                    tbody 
+                    tbody
                         each item, index in records
-                            tr 
+                            tr
+                                td
+                                    input(
+                                        type="checkbox"
+                                        name="id"
+                                        value=item.id
+                                    )
                                 td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 td
                                     img(

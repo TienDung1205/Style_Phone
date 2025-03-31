@@ -153,3 +153,28 @@ module.exports.changeStatus = async (req, res) =>{
 
     res.redirect("back");
 }
+
+// [PATCH] /admin/accounts/change-multi
+module.exports.changeMulti = async (req, res) =>{
+    const type = req.body.type;
+    const ids = req.body.ids.split(", ");
+
+    if(type == "active"){
+        await Account.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }else if (type == "inactive") {
+        await Account.updateMany({ _id: { $in: ids }}, {status : type});
+        req.flash('success', `Cập nhật trạng thái thành công!`);
+    }
+    else if (type == "delete-all") {
+        await Account.updateMany({ _id: { $in: ids }}, {
+            deleted: true,
+            deletedAt: new Date()
+        });
+        req.flash('success', `Đã xóa thành công!`);
+    }else{
+        
+    }
+
+    res.redirect("back");
+}
