@@ -49,7 +49,7 @@ block main
                             th Số điện thoại
                             //- th Địa chỉ
                             th Trạng thái
-                            th Chỉnh sửa
+                            th Thao tác
 
                     tbody
                         each item, index in records
@@ -91,10 +91,10 @@ block main
                                         ) Dừng hoạt động
 
                                 td
-                                    a(
-                                        href=`${prefixAdmin}/accounts/detail/${item.id}`
-                                        class="btn btn-primary btn-sm mr-1"
-                                    ) Chi tiết
+                                    //- a(
+                                    //-     href=`${prefixAdmin}/accounts/detail/${item.id}`
+                                    //-     class="btn btn-primary btn-sm mr-1"
+                                    //- ) Chi tiết
                                     a(
                                         href=`${prefixAdmin}/accounts/edit/${item.id}`
                                         class="btn btn-warning btn-sm mr-1"

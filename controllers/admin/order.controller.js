@@ -14,7 +14,9 @@ const mongoose = require('mongoose');
 
 // [GET] /admin/orders
 module.exports.index = async (req, res) =>{
-    let find = {};
+    let find = {
+        deleted: false
+    }
 
     // filterStatus
     const filterStatusOrder = filterStatusOrderHelper(req.query);
@@ -134,6 +136,20 @@ module.exports.changeMulti = async (req, res) =>{
     }else{
         
     }
+
+    res.redirect("back");
+}
+
+// [DELETE] /admin/orders/delete/:id
+module.exports.deleteItem = async (req, res) =>{
+    const id = req.params.id;
+
+    await Order.updateOne({ _id: id}, {
+        deleted: true,
+        deletedAt: new Date()
+    });
+    
+    req.flash('success', `Đã xóa thành công!`);
 
     res.redirect("back");
 }
