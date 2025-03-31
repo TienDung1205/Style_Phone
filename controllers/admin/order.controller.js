@@ -84,16 +84,25 @@ module.exports.index = async (req, res) =>{
         const date = new Date(dateString);
 
         const formatter = new Intl.DateTimeFormat('vi-VN', {
-        timeZone: 'Asia/Ho_Chi_Minh', // Múi giờ Việt Nam
+        timeZone: 'Asia/Ho_Chi_Minh',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
         });
 
-        record.purchaseDate =  formatter.format(date); // Định dạng theo chuẩn Việt Nam
+        let formattedDate = formatter.format(date);
+
+        // Tách chuỗi thành các phần
+        const parts = formattedDate.split(' ');
+        const timeParts = parts[0].split(':');
+        const dateParts = parts[1].split('/');
+
+        // Tạo chuỗi định dạng mong muốn
+        const finalFormattedDate = `${timeParts[0]}h${timeParts[1]} ${dateParts[0]}/${dateParts[1]}/${dateParts[2]}`;
+
+        record.purchaseDate = finalFormattedDate;
     }
 
     res.render("admin/pages/orders/index.pug", {

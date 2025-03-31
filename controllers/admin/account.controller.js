@@ -3,6 +3,9 @@ const Account = require("../../models/account.model");
 
 const systemConfig = require("../../config/system");
 
+const filterStatusHelper = require("../../helpers/filterStatus");
+const searchHelper = require("../../helpers/search");
+
 const generateHelper = require("../../helpers/generate");
 // [GET] /admin/accounts
 module.exports.index = async (req, res) =>{
@@ -10,11 +13,34 @@ module.exports.index = async (req, res) =>{
         deleted: false
     }
 
+    // filterStatus
+    const filterStatus = filterStatusHelper(req.query);
+    
+    if(req.query.status){
+        find.status = req.query.status;
+    }
+    // End filterStatus
+
+    // Search
+    const objectSearch = searchHelper(req.query);
+
+    if(objectSearch.regex){
+        find.$or = [
+            { fullName: objectSearch.regex },
+            { phone: objectSearch.regex },
+            { email: objectSearch.regex },
+            { address: objectSearch.regex }
+        ];
+    }
+    // End Search
+
     const records = await Account.find(find).select("-password");
 
     res.render("admin/pages/accounts/index.pug", {
         pageTitle:"Danh sách nhân viên",
-        records: records
+        records: records,
+        filterStatus: filterStatus,
+        keyword: objectSearch.keyword
     });
 }
 

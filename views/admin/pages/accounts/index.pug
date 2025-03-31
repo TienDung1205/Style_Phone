@@ -1,8 +1,20 @@
 extends ../../layouts/default
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
 
 block main 
     
     h1(class = "mb-4") Trang nhân viên
+
+
+    .card.mb-3 
+        .card-header Bộ lọc và Tìm kiếm 
+        .card-body 
+            .row
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6
+                    +search(keyword)
 
     //- table
     .card.mb-3 
@@ -26,7 +38,7 @@ block main
                             th Họ tên
                             th Email
                             th Số điện thoại
-                            th Địa chỉ
+                            //- th Địa chỉ
                             th Trạng thái 
                             th Chỉnh sửa
 
@@ -44,7 +56,7 @@ block main
                                 td #{item.fullName}
                                 td #{item.email}
                                 td #{item.phone}
-                                td #{item.address}
+                                //- td #{item.address}
                                 td 
                                     if(item.status == "active")
                                         a(
