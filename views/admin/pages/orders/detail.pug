@@ -1,0 +1,71 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+    +alert-error(5000)
+    +alert-success(3000)
+
+    .container.my-3
+        .row
+            .col-12
+                h1(class="mb-4") #{pageTitle}
+        .row
+            .col-12
+                if(order.status)
+                    div(class="mb-4")
+                        span Trạng thái:
+                        if(order.status === 'success')
+                            span(class = "badge badge-success ml-2") Giao hàng thành công
+                        else if order.status == "delivering"
+                            span(class = "badge badge-primary ml-2") Đang vận chuyển
+                        else if order.status == "processing"
+                            span(class = "badge badge-secondary ml-2") Đang xử lý
+                        else if order.status == "canceled"
+                            span(class = "badge badge-danger ml-2") Đã hủy
+        //- .row 
+        //-     .col-12 
+        //-         div(class="alert alert-success")
+        //-             | Cảm ơn quý khách đã đặt hàng! Đơn hàng của quý khách đã được ghi nhận và đang được xử lý.
+        if(order)
+            .row 
+                .col-12 
+                    h4(class="mb-2") Thông tin cá nhân 
+                    table(class="table table-bordered")
+                        tbody 
+                            tr
+                                td Họ tên 
+                                td #{order.userInfo.fullName}
+                            tr
+                                td Số điện thoại
+                                td #{order.userInfo.phone}
+                            tr
+                                td Địa chỉ
+                                td #{order.userInfo.address}
+        .row
+            .col-12
+                h4(class="mb-2") Thông tin đơn hàng 
+                table(class="table table-bordered")
+                    thead
+                        if(order.products.length > 0)
+                            tr
+                                th STT
+                                th Ảnh
+                                th Tên
+                                th Giá
+                                th Số lượng
+                                th Tổng tiền
+                    tbody 
+                        if(order.products.length > 0)
+                            each item, index in order.products
+                                tr 
+                                    td #{index+1}
+                                    td 
+                                        img(src=item.productInfo.thumbnail, alt=item.productInfo.title width="80px")
+                                    td #{item.productInfo.title}
+                                    td #{item.newPrice.toLocaleString('vi-VN')}đ
+                                    td #{item.quantity}
+                                    td #{item.totalPrice.toLocaleString('vi-VN')}đ
+                        
+                if(order.products.length > 0)
+                    h3(class="text-right") Tổng đơn hàng : #{order.totalPrice.toLocaleString('vi-VN')}đ
+        

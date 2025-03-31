@@ -56,7 +56,7 @@ module.exports.index = async (req, res) =>{
     const records = await Order.find(find)
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip)
-    // .sort({ position: "desc"});
+    .sort({ position: "desc"});
 
     for (const record of records) {
         if(record.user_id){
@@ -152,4 +152,38 @@ module.exports.deleteItem = async (req, res) =>{
     req.flash('success', `Đã xóa thành công!`);
 
     res.redirect("back");
+}
+
+// [GET] /admin/products/orders/:id
+module.exports.detail = async (req, res) =>{
+    try {
+        const find = {
+            deleted: false,
+            _id: req.params.id
+        }
+    
+        const order = await Order.findOne(find);
+
+        for (const product of order.products) {
+            const productInfo = await Product.findOne({
+                _id : product.product_id
+            }).select("title thumbnail")
+    
+            product.productInfo = productInfo;
+    
+            product.newPrice = productsHelper.newPriceProduct(product);
+    
+            product.totalPrice = product.newPrice * product.quantity;
+        }
+    
+        order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice , 0)
+
+        res.render("admin/pages/orders/detail.pug", {
+            pageTitle: "Chi tiết đơn hàng",
+            order: order
+        });
+    } catch (error) {
+        req.flash('error', `Đơn hàng không tồn tại!`);
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+    }
 }

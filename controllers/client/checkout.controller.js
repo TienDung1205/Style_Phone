@@ -87,6 +87,10 @@ module.exports.order = async (req, res) => {
 
     const order = new Order(orderInfo);
     order.code = generateHelper.generateRandomString(10);
+
+    const countOrders = await Order.countDocuments();
+    order.position = countOrders + 1;
+
     order.save();
 
     await Cart.updateOne({
