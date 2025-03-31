@@ -5,6 +5,7 @@ const systemConfig = require("../../config/system");
 
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
+const paginationHelper = require("../../helpers/pagination");
 
 const generateHelper = require("../../helpers/generate");
 // [GET] /admin/accounts
@@ -34,13 +35,31 @@ module.exports.index = async (req, res) =>{
     }
     // End Search
 
-    const records = await Account.find(find).select("-password");
+    // Pagination
+    const countAccounts = await Account.countDocuments(find);
+
+    let objectPagination = paginationHelper(
+        {
+        limitItems: 5,
+        currentPage: 1
+        },
+        req.query,
+        countAccounts
+    )
+
+    // End Pagination
+
+    const records = await Account.find(find)
+    .limit(objectPagination.limitItems)
+    .skip(objectPagination.skip)
+    .select("-password");
 
     res.render("admin/pages/accounts/index.pug", {
         pageTitle:"Danh sách nhân viên",
         records: records,
         filterStatus: filterStatus,
-        keyword: objectSearch.keyword
+        keyword: objectSearch.keyword,
+        pagination: objectPagination
     });
 }
 
