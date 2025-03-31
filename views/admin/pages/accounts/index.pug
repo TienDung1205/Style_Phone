@@ -66,16 +66,20 @@ block main
                                         a(
                                             href="javascript:;"
                                             data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
                                             class = "badge badge-success"
                                         ) Hoạt động
                                     else
                                         a(
                                             href="javascript:;"
                                             data-status=item.status
+                                            data-id=item.id
+                                            button-change-status
                                             class="badge badge-danger"
                                         ) Dừng hoạt động
-                                    
-                                td 
+
+                                td
                                     a(
                                         href=`${prefixAdmin}/accounts/detail/${item.id}`
                                         class="btn btn-primary btn-sm mr-1"
@@ -91,3 +95,10 @@ block main
                                     ) Xóa
     
     +pagination(pagination)
+
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/accounts/change-status`
+    )
