@@ -8,6 +8,7 @@ const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
 
 const generateHelper = require("../../helpers/generate");
+
 // [GET] /admin/accounts
 module.exports.index = async (req, res) =>{
     let find = {

@@ -3,11 +3,11 @@ include ../mixins/sub-menu.pug
 header.header 
     .container 
         .row.align-items-center 
-            .col-3
+            .col-2
                 .inner-logo 
                     a(href="/")
                         img(src=settingGeneral.logo, alt = "Logo")
-            .col-6
+            .col-5
                 .inner-menu 
                     ul 
                         li 
@@ -16,19 +16,8 @@ header.header
                             -const pathProduct = "/products";
                             a(href="/products") Sản phẩm
                                 +sub-menu(layoutProductsCategory, pathProduct)
-                        li 
-                            a(href="/cart") Giỏ hàng (#{miniCart ? miniCart.totalQuantity : 0})
-                        if(user)
-                            li
-                                a(href="/user/info") Tài khoản
-                            li
-                                a(href="/user/logout") Đăng xuất
-                        else
-                            li
-                                a(href="/user/login") Đăng nhập
-                            li 
-                                a(href="/user/register") Đăng ký
-
+                        li
+                            a(href="https://www.facebook.com/profile.php?id=100069255010487" target="_blank") Liên hệ
             .col-3
                 form(
                         class="text-right"
@@ -48,3 +37,27 @@ header.header
                                     class = "btn btn-success"
                                     type="submit"
                                 ) Tìm kiếm
+            .col-2
+                .inner-menu 
+                    ul
+                        li 
+                            a(href='/cart')
+                                i(class='fa fa-shopping-cart')
+                                span(class='cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill')
+                                    | #{miniCart ? miniCart.totalQuantity : 0}
+                        if(user)
+                            li.dropdown
+                                a(href="/user/info", class="dropdown-toggle logged-in", id="accountDropdown", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+                                    i(class="fas fa-user user-icon")
+                                    i(class="fas fa-check-circle check-icon")
+                                .dropdown-menu(aria-labelledby="accountDropdown")
+                                    a.dropdown-item(href="/user/info") Tài khoản của tôi
+                                    a.dropdown-item(href="/user/orders") Đơn hàng
+                                    a.dropdown-item(href="/user/logout") Đăng xuất
+                        else
+                            li.dropdown
+                                a(href="/user/login", class="dropdown-toggle logged-out", id="accountDropdown", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+                                    i(class="fas fa-user user-icon")
+                                .dropdown-menu(aria-labelledby="accountDropdown")
+                                    a.dropdown-item(href="/user/login") Đăng nhập
+                                    a.dropdown-item(href="/user/register") Đăng ký

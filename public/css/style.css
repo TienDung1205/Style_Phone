@@ -89,15 +89,15 @@
 }
 
 .product-item .inner-content .inner-price-new {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
-    color: green;
+    color: red;
 }
 
 .product-item .inner-content .inner-price-old {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
-    color: red;
+    color: #5B6C8F;
     text-decoration: line-through;
 }
     
@@ -170,12 +170,12 @@
 .product-detail .inner-price-new {
     font-size: 24px;
     font-weight: 600;
-    color: green;
+    color: red;
     margin-bottom: 10px;
 }
 
 .product-detail .inner-price-old {
-    color: red;
+    color: #5B6C8F;
     font-weight: 600;
     font-size: 20px;
     text-decoration: line-through;
@@ -200,12 +200,12 @@
 }
 
 .product-detail .inner-stock span{
-    color: #fff;
-    background: #939EB5;
+    color: #0069D9;
     font-weight: 600;
     display: inline-block;
-    padding: 3px 6px;
     border-radius: 8px;
+    font-weight: bold;
+    font-size: large;
 }
 /* End product-detail */
 
@@ -246,3 +246,47 @@
     cursor: pointer;
 }
 /* End Show Alert */
+
+.user-icon {
+    font-size: 1.85em;
+    margin-left: 20px; /* Điều chỉnh khoảng cách theo ý muốn */
+}
+
+.fa-shopping-cart {
+    font-size: 1.85em;
+}
+
+.check-icon {
+    color: green; /* Màu sắc của dấu tích */
+    margin-left: 5px; /* Khoảng cách giữa biểu tượng người dùng và dấu tích */
+    font-size: 0.8em; /* Kích thước của dấu tích */
+}
+
+.dropdown-toggle::after {
+    display: none; /* Ẩn tam giác sổ xuống */
+}
+
+.cart-badge {
+    background-color:red; /* Màu nền mới */
+    font-size: 0.85em; /* Kích thước chữ */
+    padding: 0.3em 0.4em; /* Khoảng cách bên trong */
+    border: 2px solid white; /* Viền trắng */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+    transform: translate(-50%, -50%); /* Điều chỉnh vị trí */
+    color: #ffffff;
+}
+
+.header .container .row .col-5 .inner-menu {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center;    /* Tùy chọn: Căn giữa theo chiều dọc nếu cần */
+    height: 100%;          /* Tùy chọn: Để align-items hoạt động tốt nếu .inner-menu không có chiều cao tự nhiên */
+}
+
+.header .container .row .col-5 .inner-menu ul li {
+    margin-right: 10px; /* Thêm khoảng cách giữa các mục menu (tùy chỉnh)
+}
+
+.header .container .row .col-5 .inner-menu ul li:last-child {
+    margin-right: 0; /* Loại bỏ margin bên phải của mục cuối cùng */
+}

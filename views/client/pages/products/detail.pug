@@ -23,28 +23,30 @@ block main
                         div(class="inner-price-old") #{product.price.toLocaleString('vi-VN')}đ
                     
                     if(product.discountPercentage)
-                        div(class="inner-percent") Giảm tới <span>#{product.discountPercentage.toLocaleString('vi-VN')}đ</span>
+                        div(class="inner-percent") Giảm tới: <span>#{product.discountPercentage.toLocaleString('vi-VN')}đ</span>
                     
                     if(product.stock)
-                        div(class="inner-stock") Còn lại <span>#{product.stock}</span> sản phẩm
+                        div(class="inner-stock") Số lượng: <span>#{product.stock}</span> sản phẩm
                     
-                    form(
-                        action=`/cart/add/${product.id}`
-                        method="POST"
-                    )
-                        input(
-                            class="form control mb-2"
-                            type="number"
-                            name="quantity"
-                            value="1"
-                            min="1"
-                            max=product.stock
+                        form(
+                            action=`/cart/add/${product.id}`
+                            method="POST"
                         )
-                        button(
-                            type="submit"
-                            class="btb btn-success btn-block"
-                        ) Thêm vào giỏ hàng 
-
+                            input(
+                                class="form control mb-2"
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                max=product.stock
+                            )
+                            button(
+                                type="submit"
+                                class="btb btn-success btn-block"
+                            ) Thêm vào giỏ hàng 
+                    else 
+                        p
+                            span(style="font-size: 1.25em; color: #000000; font-weight: bold; font-family: Arial, sans-serif;") Tạm hết. Sản phẩm sẽ sớm quay lại!
         hr
 
         .container.my-5 
