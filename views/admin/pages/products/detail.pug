@@ -31,15 +31,7 @@ block main
             if(category)
                 +select-tree(category, 1, product.product_category_id) 
     if(product.description)
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                class="form-control"
-                id="desc"
-                name="description"
-                rows="5"
-                readonly
-            ) #{product.description}
+        div(class="mb-4") Mô tả: !{product.description}
     
     if(product.price)
         div(class="mb-4")
