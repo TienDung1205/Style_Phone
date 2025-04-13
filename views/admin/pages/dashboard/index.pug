@@ -2,34 +2,34 @@ extends ../../layouts/default
 
 block main 
     h1(class="mb-4") Trang tổng quan
-    .row.mt-4
-        .col-5
-            a(href=`${prefixAdmin}/products-category`)
-                .card.mb-3
-                    .card-header Danh mục sản phẩm 
-                    .card-body 
-                        p Số lượng: <b>#{statistic.productCategory.total}</b>
-                        p Hoạt động: <b>#{statistic.productCategory.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.productCategory.inactive}</b>
-        .col-5
-            a(href=`${prefixAdmin}/products`)
-                .card.mb-3
-                    .card-header Danh sách sản phẩm 
-                    .card-body 
-                        p Số lượng: <b>#{statistic.product.total}</b>
-                        p Hoạt động: <b>#{statistic.product.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
-        .col-5
-            .card.mb-3
-                .card-header Danh sách khách hàng
-                .card-body 
-                    p Số lượng: <b>#{statistic.user.total}</b>
-                    p Hoạt động: <b>#{statistic.user.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
-        .col-5
-            .card.mb-3
-                .card-header Danh sách tài khoản
-                .card-body
-                    p Số lượng: <b>#{statistic.account.total}</b>
-                    p Hoạt động: <b>#{statistic.account.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.account.inactive}</b>
+    //- .row.mt-4
+    //-     .col-5
+    //-         a(href=`${prefixAdmin}/products-category`)
+    //-             .card.mb-3
+    //-                 .card-header Danh mục sản phẩm 
+    //-                 .card-body 
+    //-                     p Số lượng: <b>#{statistic.productCategory.total}</b>
+    //-                     p Hoạt động: <b>#{statistic.productCategory.active}</b>
+    //-                     p Dừng hoạt động: <b>#{statistic.productCategory.inactive}</b>
+    //-     .col-5
+    //-         a(href=`${prefixAdmin}/products`)
+    //-             .card.mb-3
+    //-                 .card-header Danh sách sản phẩm 
+    //-                 .card-body 
+    //-                     p Số lượng: <b>#{statistic.product.total}</b>
+    //-                     p Hoạt động: <b>#{statistic.product.active}</b>
+    //-                     p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
+    //-     .col-5
+    //-         .card.mb-3
+    //-             .card-header Danh sách khách hàng
+    //-             .card-body 
+    //-                 p Số lượng: <b>#{statistic.user.total}</b>
+    //-                 p Hoạt động: <b>#{statistic.user.active}</b>
+    //-                 p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
+    //-     .col-5
+    //-         .card.mb-3
+    //-             .card-header Danh sách tài khoản
+    //-             .card-body
+    //-                 p Số lượng: <b>#{statistic.account.total}</b>
+    //-                 p Hoạt động: <b>#{statistic.account.active}</b>
+    //-                 p Dừng hoạt động: <b>#{statistic.account.inactive}</b>

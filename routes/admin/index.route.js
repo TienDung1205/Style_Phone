@@ -7,10 +7,14 @@ const productRoutes = require("./product.route");
 const productCategoryRoutes = require("./product-category.route");
 const accountRoutes = require("./account.route");
 const authRoutes = require("./auth.route");
-const myAccountRoutes = require("./my-account.router");
+const myAccountRoutes = require("./my-account.route");
 const settingRoutes = require("./setting.route");
 const userRoutes = require("./user.route");
 const orderRoutes = require("./order.route");
+// const racerRoutes = require("./racer.route");
+const raceRoutes = require("./race.route");
+// const teamRoutes = require("./team.route");
+// const registrationRoutes = require("./registration.route");
 
 module.exports = (app) =>{
     const PATH_ADMIN = systemConfig.prefixAdmin;
@@ -64,4 +68,28 @@ module.exports = (app) =>{
         authMiddleware.requireAuth,
         orderRoutes
     );
+
+    // app.use(
+    //     PATH_ADMIN + '/racers',
+    //     authMiddleware.requireAuth,
+    //     racerRoutes
+    // );
+
+    app.use(
+        PATH_ADMIN + '/races',
+        authMiddleware.requireAuth,
+        raceRoutes
+    );
+
+    // app.use(
+    //     PATH_ADMIN + '/teams',
+    //     authMiddleware.requireAuth,
+    //     teamRoutes
+    // );
+
+    // app.use(
+    //     PATH_ADMIN + '/registrations',
+    //     authMiddleware.requireAuth,
+    //     registrationRoutes
+    // );
 }

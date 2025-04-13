@@ -1,0 +1,59 @@
+extends ../../layouts/default
+include ../../mixins/alert.pug
+
+block main
+  +alert-success(3000)
+  +alert-error(5000)
+  h1.mb-4 Đăng ký tay đua: #{race.tenChang}
+
+  //- Form chọn đội đua
+  form(method="GET", action=`/admin/races/register/${race._id}`)
+    .form-group
+      label(for="teamId") Chọn đội đua:
+      select#teamId.form-control(name="teamId" required onchange="this.form.submit()")
+        option(value="" disabled selected) -- Chọn đội đua --
+        each team in teams
+          option(
+            value=team._id 
+            selected=(selectedTeamId.toString() === team._id.toString())
+          ) #{team.tenDoi}
+
+  if selectedTeamId
+    form(method="POST", action=`/admin/races/register/${race._id}`)
+      input(type="hidden", name="teamId", value=selectedTeamId)
+
+      if racers.length
+        .table-responsive
+          table.table.table-hover.table-striped
+            thead
+              tr
+                th STT
+                th Họ tên
+                th Quốc tịch
+                th Loại xe
+                th Đội đua
+                th.text-center Chọn
+            tbody
+              each racer, index in racers
+                tr
+                  td #{index + 1}
+                  td #{racer.hoTen}
+                  td #{racer.quocTich || 'Chưa rõ'}
+                  td #{racer.loaiXe || 'Chưa rõ'}
+                  td #{racer.doiDuaId && racer.doiDuaId.tenDoi ? racer.doiDuaId.tenDoi : 'Không rõ'}
+                  td.text-center
+                    input.form-check-input(
+                      type="checkbox",
+                      name="selectedRacers",
+                      value=racer._id,
+                      checked=registeredRacers && registeredRacers.includes(racer._id.toString())
+                    )
+        button.btn.btn-success.mt-3(type="submit") Đăng ký
+      else
+        p.text-danger.mt-3 Không có tay đua nào trong đội đua này.
+  hr
+  a(
+    href=`${prefixAdmin}/races/detail/${race._id}`
+    class="btn btn-primary btn-sm mr-5"
+    style="float: right;"
+  ) Chi tiết chặng đua

@@ -1,0 +1,108 @@
+extends ../../layouts/default 
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/form-change-multi-products.pug
+include ../../mixins/alert.pug
+
+block main 
+    +alert-success(3000)
+    +alert-error(5000)
+    
+    h1(class = "mb-4") Danh sách chặng đua
+
+    .card.mb-3 
+        .card-header Bộ lọc và Tìm kiếm 
+        .card-body 
+            .row
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6
+                    //- +search(keyword)
+
+    .card.mb-3 
+        .card-header Danh sách chặng đua
+        .card-body 
+            .row 
+                .col-10
+                //-     +form-change-multi-products(`${prefixAdmin}/races/change-multi?_method=PATCH`)
+                .col-2.text-right
+                    a(
+                        href=`${prefixAdmin}/races/create`
+                        class="btn btn-outline-success"
+                    ) + Thêm mới
+            table(
+                class="table table-hover table-sm"
+                checkbox-multi
+            )
+                thead 
+                    tr 
+                        //- th 
+                        //-     input(type="checkbox" name="checkall")
+                        th STT
+                        th Tên chặng
+                        th Ngày đua
+                        th Số vòng đua
+                        th Chiều dài 
+                        th Địa điểm
+                        th Trạng thái 
+                        th Thao tác
+
+                tbody 
+                    each item, index in races
+                        tr 
+                            //- td 
+                            //-     input(
+                            //-         type="checkbox"
+                            //-         name="id"
+                            //-         value=item.id
+                            //-     )
+                            td #{pagination.limitItems * (pagination.currentPage - 1) + (index + 1)}
+                            td #{item.tenChang}
+                            td #{new Date(item.ngayDua).toLocaleDateString('vi-VN')}
+                            th #{item.soVongDua}
+                            th #{item.chieuDai} km 
+                            th #{item.diaDiem}
+                            td
+                                if(item.status == "active")
+                                    a(
+                                        href="javascript:;"
+                                        data-status=item.status
+                                        data-id=item.id
+                                        button-change-status
+                                        class="badge badge-success"
+                                    ) Hoạt động
+                                else
+                                    a(
+                                        href="javascript:;"
+                                        data-status=item.status
+                                        data-id=item.id
+                                        button-change-status
+                                        class="badge badge-danger"
+                                    ) Dừng hoạt động
+
+                            td 
+                                a(
+                                    href=`${prefixAdmin}/races/detail/${item.id}`
+                                    class="btn btn-primary btn-sm mr-1"
+                                ) Chi tiết
+                                a(
+                                    href=`${prefixAdmin}/races/register/${item._id}`
+                                    class="btn btn-warning btn-sm mr-1"
+                                ) Đăng ký thi đấu
+
+    +pagination(pagination)
+
+    form(
+        action=""
+        method="POST"
+        id="form-change-status"
+        data-path=`${prefixAdmin}/races/change-status`
+    ) 
+
+    form(
+        action=""
+        method="POST"
+        id="form-delete-item"
+        data-path=`${prefixAdmin}/races/delete`
+    )
