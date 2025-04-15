@@ -1,12 +1,18 @@
 extends ../../layouts/default
 include ../../mixins/box-head.pug
 include ../../mixins/product-layout.pug
+include ../../mixins/pagination.pug
 
 block main 
-    block main
-        .container.my-3
-            .row
-                .col-12
-                    +box-head(pageTitle)
+    .container.my-3
+        .row
+            .col-12
+                +box-head(pageTitle)
 
-            +product-grid(products)
+        +product-grid(products)
+        br
+        hr
+        br
+        .row
+            .col-12.d-flex.justify-content-center
+                +pagination(pagination)
