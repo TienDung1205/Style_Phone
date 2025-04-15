@@ -321,3 +321,41 @@ module.exports.info = async (req, res) =>{
         pageTitle: "Thông tin tài khoản"
     })
 }
+
+// [GET] /user/change/password/
+module.exports.changePassword = async (req, res) =>{
+    res.render("client/pages/user/change-password", {
+        pageTitle: "Đặt lại mật khẩu"
+    })
+}
+
+// [POST] /user/change/password/
+module.exports.changePasswordPost = async (req, res) =>{
+    const oldPassword = req.body.oldPassword;
+    const password = req.body.password;
+    const tokenUser = req.cookies.tokenUser;
+
+    const user = await User.findOne({
+        tokenUser: tokenUser,
+        password: md5(oldPassword)
+    })
+    if(!user){
+        req.flash("error", `Mật khẩu không đúng!`);
+        res.redirect(`back`);
+        return;
+    }
+    // console.log(oldPassword);
+    // console.log(password);
+
+    // console.log(user);
+
+    await User.updateOne({
+        tokenUser: tokenUser
+    },
+    {
+        password: md5(password)
+    })
+
+    req.flash("success", "Đổi mật khẩu thành công!");
+    res.redirect("back");
+}
