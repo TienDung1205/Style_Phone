@@ -47,6 +47,7 @@ module.exports.loginPost = async (req, res) =>{
     }
 
     res.cookie("token", user.token);
+    req.flash("success", `Đăng nhập thành công!`);
     res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
 }
 

@@ -8,7 +8,7 @@ const homeRoutes = require("./home.route");
 const searchRoutes = require("./search.route");
 const cartRoutes = require("./cart.route");
 const userRoutes = require("./user.route");
-const checkoutRoutes = require("./checkout.router");
+const checkoutRoutes = require("./checkout.route");
 
 module.exports = (app) =>{
     app.use(categoryMiddleware.category);
