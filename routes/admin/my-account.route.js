@@ -17,7 +17,7 @@ router.patch(
     '/edit',
     upload.single('avatar'),
     uploadCloud.upload,
-    // validate.editPatch,
+    validate.editPatch,
     controller.editPatch
 );
 

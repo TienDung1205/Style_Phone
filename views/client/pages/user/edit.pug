@@ -2,17 +2,24 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 include ../../mixins/alert.pug
 
-    block main
-        +alert-error(5000)
-        
-        .row.flex-column.justify-content-center.align-items-center
+block main 
+    +alert-error(5000)
+    
+    .row.flex-column.justify-content-center.align-items-center
             .w-50
                 h1(class="mb-4") 
                     +box-head(pageTitle)
 
-                if(user.fullName)
+                form(
+                    action=`/user/edit/?_method=PATCH`
+                    method="POST"
+                    enctype="multipart/form-data"
+                )
+                    div(class="mb-4")
+                        span Email :
+                        span(class="font-weight-bold fs-5 ml-2") #{user.email}
                     div(class="form-group")
-                        label(for="fullName") Họ tên
+                        label(for="fullName") Họ tên *
                         input(
                             type="text"
                             class="form-control"
@@ -20,21 +27,7 @@ include ../../mixins/alert.pug
                             name="fullName"
                             value=user.fullName
                             required
-                            readonly
                         )
-                if(user.email)
-                    div(class="form-group")
-                        label(for="email") Email
-                        input(
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            name="email"
-                            value=user.email
-                            required
-                            readonly
-                        )
-                if(user.phone)
                     div(class="form-group")
                         label(for="phone") Số điện thoại
                         input(
@@ -43,9 +36,7 @@ include ../../mixins/alert.pug
                             id="phone"
                             name="phone"
                             value=user.phone
-                            readonly
                         )
-                if(user.address)
                     div(class="form-group")
                         label(for="address") Địa chỉ
                         input(
@@ -54,11 +45,9 @@ include ../../mixins/alert.pug
                             id="address"
                             name="address"
                             value=user.address
-                            readonly
                         )
-                hr
-                a(
-                    href=`/user/edit`
-                    class="btn btn-primary btn-sm mr-5"
-                    style="float: left;"
-                ) Chỉnh sửa thông tin
+                    div(class="form-group")
+                        button(
+                            type="submit"
+                            class="btn btn-primary"
+                        ) Cập nhật

@@ -1,10 +1,15 @@
 const express = require("express");
+const multer = require('multer');
 const router = express.Router();
+
+const upload = multer();
 
 const controller = require("../../controllers/client/user.controller");
 
-const validate = require("../../validates/client/user.validate")
+const validate = require("../../validates/client/user.validate");
 const authMiddleware = require("../../middlewares/client/auth.middleware");
+
+const uploadCloud = require("../../middlewares/admin/uploadCloud.middleware");
 
     router.get("/register", controller.register);
 
@@ -28,14 +33,24 @@ router.get('/logout', controller.logout);
 
     router.post('/password/otp', validate.otpPost, controller.otpPasswordPost);
 
-router.get('/password/reset', controller.resetPassword);
+router.get('/password/reset', authMiddleware.requireAuth, controller.resetPassword);
 
 router.post('/password/reset', validate.resetPasswordPost, controller.resetPasswordPost);
 
 router.get("/info", authMiddleware.requireAuth, controller.info);
 
-router.get("/change/password", controller.changePassword);
+router.get("/change/password", authMiddleware.requireAuth, controller.changePassword);
 
 router.post('/change/password', validate.changePasswordPost, controller.changePasswordPost);
+
+router.get("/edit", authMiddleware.requireAuth, controller.edit);
+
+router.patch(
+    "/edit",
+    upload.single('avatar'),
+    uploadCloud.upload,
+    validate.editPatch,
+    controller.editPatch
+);
 
 module.exports = router;

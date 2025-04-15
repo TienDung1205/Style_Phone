@@ -359,3 +359,18 @@ module.exports.changePasswordPost = async (req, res) =>{
     req.flash("success", "Đổi mật khẩu thành công!");
     res.redirect("back");
 }
+
+// [GET] /user/edit
+module.exports.edit = async (req, res) =>{
+    res.render("client/pages/user/edit", {
+        pageTitle: "Chỉnh sửa thông tin tài khoản"
+    })
+}
+
+// [PATCH] /user/edit
+module.exports.editPatch = async (req, res) =>{
+    const id = res.locals.user.id;
+    await User.updateOne({ _id: id }, req.body);
+    req.flash("success", "Cập nhật thông tin thành công!");
+    res.redirect(`back`);
+}
