@@ -30,12 +30,6 @@ module.exports.editPatch = async (req, res) =>{
         req.flash("error", `Email ${req.body.email} đã tồn tại!`);
     }
     else{
-        if(req.body.password){
-            req.body.password = md5(req.body.password);
-        }else{
-            delete req.body.password;
-        }
-        
         await Account.updateOne({ _id: id }, req.body);
         req.flash("success", "Cập nhật thông tin thành công!")
     }
@@ -43,3 +37,37 @@ module.exports.editPatch = async (req, res) =>{
     res.redirect(`back`);
 }
 
+// [GET] admin/my-account/change/password
+module.exports.changePassword = async (req, res) =>{
+    res.render("admin/pages/my-account/change-password", {
+        pageTitle: "Đổi mật khẩu"
+    })
+}
+
+// [POST] admin/my-account/change/password
+module.exports.changePasswordPost = async (req, res) =>{
+    const oldPassword = req.body.oldPassword;
+    const password = req.body.password;
+    const token = req.cookies.token;
+
+    const account = await Account.findOne({
+        token: token,
+        password: md5(oldPassword)
+    })
+
+    if(!account){
+        req.flash("error", `Mật khẩu không đúng!`);
+        res.redirect(`back`);
+        return;
+    }
+
+    await Account.updateOne({
+        token: token
+    },
+    {
+        password: md5(password)
+    })
+
+    req.flash("success", "Đổi mật khẩu thành công!");
+    res.redirect("back");
+}

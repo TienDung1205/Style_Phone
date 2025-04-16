@@ -5,13 +5,23 @@ header.header
                 .inner-logo 
                     a(href = `${prefixAdmin}/dashboard`) ADMIN 
             
-            .col-9
-                div(class="text-right")
-                    a(
-                        href = `${prefixAdmin}/my-account`
-                        class="btn btn-primary btn-sm mr-2"
-                    ) Thông tin
-                    a(
-                        href = `${prefixAdmin}/auth/logout`
-                        class="btn btn-danger btn-sm"
-                    ) Đăng xuất
+            .col-7
+            //-     div(class="text-right")
+                    //- a(
+                    //-     href = `${prefixAdmin}/my-account`
+                    //-     class="btn btn-primary btn-sm mr-2"
+                    //- ) Thông tin
+                    //- a(
+                    //-     href = `${prefixAdmin}/auth/logout`
+                    //-     class="btn btn-danger btn-sm"
+                    //- ) Đăng xuất
+            .col-2
+                .inner-menu
+                    ul
+                        li.dropdown
+                            a(href=`${prefixAdmin}/my-account`, class="dropdown-toggle logged-in", id="accountDropdown", role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+                                i(class="fas fa-user user-icon")
+                            .dropdown-menu(aria-labelledby="accountDropdown")
+                                a.dropdown-item(href=`${prefixAdmin}/my-account`) Tài khoản của tôi
+                                a.dropdown-item(href=`${prefixAdmin}/my-account/change/password`) Đổi mật khẩu
+                                a.dropdown-item(href=`${prefixAdmin}/auth/logout`) Đăng xuất

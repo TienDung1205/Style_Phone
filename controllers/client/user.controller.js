@@ -325,14 +325,14 @@ module.exports.info = async (req, res) =>{
     })
 }
 
-// [GET] /user/change/password/
+// [GET] /user/change/password
 module.exports.changePassword = async (req, res) =>{
     res.render("client/pages/user/change-password", {
         pageTitle: "Đặt lại mật khẩu"
     })
 }
 
-// [POST] /user/change/password/
+// [POST] /user/change/password
 module.exports.changePasswordPost = async (req, res) =>{
     const oldPassword = req.body.oldPassword;
     const password = req.body.password;

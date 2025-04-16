@@ -21,4 +21,8 @@ router.patch(
     controller.editPatch
 );
 
+router.get("/change/password", controller.changePassword);
+
+router.post('/change/password', validate.changePasswordPost, controller.changePasswordPost);
+
 module.exports = router;
