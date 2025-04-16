@@ -1,6 +1,7 @@
 const Product = require("../../models/product.model");
 const ProductCategory = require("../../models/product-category.model");
 const User = require("../../models/user.model");
+const Order = require("../../models/order.model");
 
 module.exports.dashboard = async (req, res) => {
 
@@ -20,10 +21,12 @@ module.exports.dashboard = async (req, res) => {
             active: await User.countDocuments({deleted: false, status: "active"}),
             inactive: await User.countDocuments({deleted: false, status: "inactive"})
         },
-        account:{
-            total: 0,
-            active: 0,
-            inactive: 0
+        order:{
+            total: await Order.countDocuments(),
+            success: await Order.countDocuments({status: "success"}),
+            delivering: await Order.countDocuments({status: "delivering"}),
+            processing: await Order.countDocuments({status: "processing"}),
+            canceled: await Order.countDocuments({status: "canceled"})
         }
     }
 

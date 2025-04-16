@@ -58,3 +58,28 @@ if (buttonsPagination) {
     })
 }
 // End Pagination
+
+// Canceled Item
+const buttonsCanceled = document.querySelectorAll("[button-canceled]");
+if(buttonsCanceled.length > 0){
+    const formCanceledItem = document.querySelector("#form-canceled-item");
+    const path = formCanceledItem.getAttribute("data-path");
+
+    buttonsCanceled.forEach(button => {
+        button.addEventListener("click", () => {
+            const isConfirm = confirm("Bạn có chắc chắn muốn hủy đơn hàng này?");
+
+            if(isConfirm){
+                const id = button.getAttribute("data-id");
+                
+                const action = `${path}/${id}?_method=POST`;
+                
+                // console.log(action);
+                formCanceledItem.action = action;
+
+                formCanceledItem.submit();
+            }
+        })
+    })
+}
+// Canceled Item

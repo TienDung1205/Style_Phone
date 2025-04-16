@@ -3,9 +3,12 @@ const User = require("../../models/user.model");
 const ForgotPassword = require("../../models/forgot-password.model");
 const Register = require("../../models/register.model");
 const Cart = require("../../models/cart.model");
+const Order = require("../../models/order.model");
+const Product = require("../../models/product.model");
 
 const generateHelper = require("../../helpers/generate");
 const sendMailHelper = require("../../helpers/sendMail");
+const productsHelper = require("../../helpers/products");
 
 //[GET] /user/register
 module.exports.register = async (req, res) => {
@@ -373,4 +376,105 @@ module.exports.editPatch = async (req, res) =>{
     await User.updateOne({ _id: id }, req.body);
     req.flash("success", "Cập nhật thông tin thành công!");
     res.redirect(`back`);
+}
+
+// [GET] /user/order
+module.exports.order = async (req, res) =>{
+    const id = res.locals.user.id;
+    const find = {
+        deleted: false,
+        user_id: id
+    }
+
+    const records = await Order.find(find)
+    .sort({ position: "desc"});
+
+    for (const record of records) {
+        if(record.user_id){
+            const user = await User.findOne({
+                _id: record.user_id
+            }).select("-password")
+
+            record.user = user;
+        }
+
+        if (record.products.length > 0) {
+            for (const item of record.products) {
+                item.newPrice = productsHelper.newPriceProduct(item);
+
+                item.totalPrice = item.newPrice * item.quantity;
+            }
+        }
+    
+        record.totalPrice = record.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        const dateString = record.createdAt;
+        const date = new Date(dateString);
+
+        const formatter = new Intl.DateTimeFormat('vi-VN', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+        record.purchaseDate = formatter.format(date);
+
+    }
+
+    res.render("client/pages/user/order", {
+        pageTitle:"Đơn hàng của tôi",
+        records: records
+    });
+}
+
+// [GET] /user/order/:id
+module.exports.orderDetail = async (req, res) =>{
+    try {
+        const user_id = res.locals.user.id;
+        const find = {
+            deleted: false,
+            _id: req.params.id,
+            user_id: user_id
+        }
+    
+        const order = await Order.findOne(find);
+
+        for (const product of order.products) {
+            const productInfo = await Product.findOne({
+                _id : product.product_id
+            }).select("title thumbnail")
+    
+            product.productInfo = productInfo;
+    
+            product.newPrice = productsHelper.newPriceProduct(product);
+    
+            product.totalPrice = product.newPrice * product.quantity;
+        }
+    
+        order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice , 0)
+
+        res.render("client/pages/user/order-detail.pug", {
+            pageTitle: "Chi tiết đơn hàng",
+            order: order
+        });
+    } catch (error) {
+        req.flash('error', `Đơn hàng không tồn tại!`);
+        res.redirect(`/user/order`);
+    }
+}
+
+// [POST] /user/order/canceled/:id
+module.exports.canceledItem = async (req, res) =>{
+    const id = req.params.id;
+
+    await Order.updateOne({ _id: id}, {
+        status: "canceled"
+    });
+    
+    req.flash('success', `Đã hủy đơn hàng!`);
+
+    res.redirect("back");
 }

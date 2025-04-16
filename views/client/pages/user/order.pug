@@ -1,43 +1,26 @@
 extends ../../layouts/default
+include ../../mixins/box-head.pug
 include ../../mixins/alert.pug
-include ../../mixins/filter-status.pug
-include ../../mixins/search.pug
-include ../../mixins/pagination.pug
-include ../../mixins/form-change-multi-orders.pug
 
 block main 
-    +alert-success(3000)
     +alert-error(5000)
 
-    h1(class = "mb-4") Trang đặt hàng
-
-    .card.mb-3 
-        .card-header Bộ lọc và Tìm kiếm 
-        .card-body 
-            .row
-                .col-6
-                    +filter-status(filterStatusOrder)
-                .col-6
-                    +search(keyword)
-
-    //- table
-    .card.mb-3 
-        .card-header #{pageTitle}
-            .card-body 
-                +form-change-multi-orders(`${prefixAdmin}/orders/change-multi?_method=PATCH`)
-                        
-
+    .container.my-3
+        .row
+            .col-12
+                +box-head(pageTitle)
+    
+        
+        .row
+            .col-12
                 table(
                     class="table table-hover table-sm"
-                    checkbox-multi
                 )
                     thead
                         tr
-                            th
-                                input(type="checkbox" name="checkall")
                             th STT
-                            th Mã đơn hàng
-                            th Email
+                            //- th Mã đơn hàng
+                            //- th Email
                             th Họ tên
                             th Số điện thoại
                             th Địa chỉ
@@ -48,20 +31,14 @@ block main
 
                     tbody 
                         each item, index in records
-                            tr 
-                                td
-                                    input(
-                                        type="checkbox"
-                                        name="id"
-                                        value=item.id
-                                    )
-                                td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
-                                td #{item.code}
-                                td #{item.user ? (item.user.email ? item.user.email : "") : ""}
+                            tr
+                                td #{index + 1}
+                                //- td #{item.code}
+                                //- td #{item.user ? (item.user.email ? item.user.email : "") : ""}
                                 td #{item.userInfo.fullName}
                                 td #{item.userInfo.phone}
                                 td #{item.userInfo.address}
-                                td 
+                                td
                                     if item.status == "success"
                                         a(
                                             data-status=item.status
@@ -90,24 +67,19 @@ block main
                                 td #{item.purchaseDate}
                                 td 
                                     a(
-                                        href=`${prefixAdmin}/orders/detail/${item.id}`
+                                        href=`/user/order/detail/${item.id}`
                                         class="btn btn-primary btn-sm mr-1"
                                     ) Chi tiết
-                                    //- a(
-                                    //-     href=`${prefixAdmin}/orders/edit/${item.id}`
-                                    //-     class="btn btn-warning btn-sm mr-1"
-                                    //- ) Sửa
-                                    button(
-                                        class="btn btn-danger btn-sm"
-                                        data-id = item.id
-                                        button-delete
-                                    ) Xóa
-
-    +pagination(pagination)
-
+                                    if(item.status == "processing")
+                                        button(
+                                            class="btn btn-danger btn-sm"
+                                            data-id = item.id
+                                            button-canceled
+                                        ) Hủy
+    
     form(
         action=""
         method="POST"
-        id="form-delete-item"
-        data-path=`${prefixAdmin}/orders/delete`
+        id="form-canceled-item"
+        data-path=`/user/order/canceled`
     )

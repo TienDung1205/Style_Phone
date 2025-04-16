@@ -53,4 +53,10 @@ router.patch(
     controller.editPatch
 );
 
+router.get("/order", authMiddleware.requireAuth, controller.order);
+
+router.get("/order/detail/:id", authMiddleware.requireAuth, controller.orderDetail);
+
+router.post('/order/canceled/:id', controller.canceledItem);
+
 module.exports = router;
