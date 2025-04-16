@@ -3,10 +3,12 @@ const router = express.Router();
 
 const controller = require("../../controllers/client/checkout.controller");
 
-router.get("/", controller.index);
+const authMiddleware = require("../../middlewares/client/auth.middleware");
+
+router.get("/", authMiddleware.requireAuth, controller.index);
 
 router.post("/order", controller.order);
 
-router.get("/success/:orderId", controller.success);
+router.get("/success/:orderId", authMiddleware.requireAuth, controller.success);
 
 module.exports = router;

@@ -79,8 +79,16 @@ module.exports.addPost = async (req, res) => {
         // Cập nhật lại số lượng product trong giỏ hàng
         let quantityNew = quantity + existProductInCart.quantity;
         
+        if(productInfo.stock == existProductInCart.quantity){
+            req.flash("error", `Đã có ${existProductInCart.quantity} sản phẩm trong giỏ hàng. Bạn không thể thêm sản phẩm vào giỏ`);
+            res.redirect("back");
+            return;
+        }
+
         if(quantityNew > productInfo.stock){
-            quantityNew = productInfo.stock
+            req.flash("error", `Đã có ${existProductInCart.quantity} sản phẩm trong giỏ hàng. Bạn chỉ có thêm tối đa ${productInfo.stock - existProductInCart.quantity} sản phẩm`);
+            res.redirect("back");
+            return;
         }
 
         await Cart.updateOne({
@@ -158,7 +166,9 @@ module.exports.update = async (req, res) => {
     }).select("stock");
     
     if(quantity > productInfo.stock){
-        quantity = productInfo.stock
+        req.flash("error", `Số lượng sản phẩm đã đạt tối đa!`);
+        res.redirect("back");
+        return;
     }
     //End Số lượng tối đa của sản phẩm
     
