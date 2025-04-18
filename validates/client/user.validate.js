@@ -143,5 +143,14 @@ module.exports.editPatch = (req, res, next) => {
         return;
     }
 
+    const phoneNumber = req.body.phone;
+    const phoneRegex = /^\d{10,11}$/;
+
+    if (!phoneRegex.test(phoneNumber)) {
+        req.flash("error", "Số điện thoại không hợp lệ!");
+        res.redirect("back");
+        return;
+    }
+
     next();
 }

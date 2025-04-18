@@ -49,12 +49,15 @@ block main
                     tbody 
                         each item, index in records
                             tr 
-                                td
-                                    input(
-                                        type="checkbox"
-                                        name="id"
-                                        value=item.id
-                                    )
+                                if(item.status != "canceled")
+                                    td
+                                        input(
+                                            type="checkbox"
+                                            name="id"
+                                            value=item.id
+                                        )
+                                else 
+                                    td
                                 td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 td #{item.code}
                                 td #{item.user ? (item.user.email ? item.user.email : "") : ""}

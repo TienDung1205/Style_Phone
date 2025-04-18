@@ -83,3 +83,26 @@ if(buttonsCanceled.length > 0){
     })
 }
 // Canceled Item
+
+// Check Phone
+
+const phoneInputs = document.querySelectorAll('input[name="phone"]');
+
+phoneInputs.forEach(phoneInput => {
+  phoneInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    // Ví dụ kiểm tra độ dài tối thiểu và tối đa (tùy chỉnh theo nhu cầu)
+    if (this.value.length < 10 || this.value.length > 11) {
+      // Hiển thị thông báo lỗi (tùy chọn)
+      console.log("Số điện thoại phải có từ 10 đến 11 chữ số.");
+      // Có thể thêm class 'is-invalid' để hiển thị lỗi trực quan
+      this.classList.add('is-invalid');
+    } else {
+      this.classList.remove('is-invalid');
+      // Có thể thêm class 'is-valid' nếu cần
+      this.classList.add('is-valid');
+    }
+  });
+});
+
+// End Check Phone

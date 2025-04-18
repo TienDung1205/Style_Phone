@@ -11,6 +11,12 @@ module.exports.createPost = (req, res, next) => {
         return;
     }
 
+    if(req.body.password.length < 8){
+        req.flash("error", "Mật khẩu phải có ít nhất 8 kí tự!");
+        res.redirect("back");
+        return;
+    }
+
     if(!req.body.password){
         req.flash("error", "Vui lòng nhập mật khẩu!");
         res.redirect("back");
