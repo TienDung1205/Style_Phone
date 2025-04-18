@@ -62,6 +62,12 @@ module.exports.order = async (req, res) => {
             quantity: product.quantity
         }
 
+        if(productInfo.stock < product.quantity){
+            req.flash("error", "Số lượng sản phẩm bạn muốn mua vượt quá số lượng sản phẩm có sẵn!");
+            res.redirect("back");
+            return;
+        }
+
         products.push(objectProduct);
 
         const newStock = productInfo.stock - product.quantity;

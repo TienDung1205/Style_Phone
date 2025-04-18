@@ -470,6 +470,23 @@ module.exports.orderDetail = async (req, res) =>{
 module.exports.canceledItem = async (req, res) =>{
     const id = req.params.id;
 
+    const order = await Order.findOne({ _id: id});
+    for (const product of order.products) {
+        const productInfo = await Product.findOne({
+            _id: product.product_id
+        }).select("stock");
+
+        const newStock = productInfo.stock + product.quantity;
+        await Product.updateOne({
+            _id: product.product_id
+        }, {
+            $set: {
+                stock: newStock
+            }
+        });
+
+    }
+
     await Order.updateOne({ _id: id}, {
         status: "canceled"
     });

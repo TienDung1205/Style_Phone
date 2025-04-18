@@ -122,7 +122,28 @@ module.exports.changeMulti = async (req, res) =>{
         await Order.updateMany({ _id: { $in: ids }}, {status : type});
         req.flash('success', `Cập nhật trạng thái thành công!`);
     }else if (type == "canceled") {
-        await Order.updateMany({ _id: { $in: ids }}, {status : type});
+        for (const id of ids) {
+            const order = await Order.findOne({ _id: id});
+            for (const product of order.products) {
+                const productInfo = await Product.findOne({
+                    _id: product.product_id
+                }).select("stock");
+
+                const newStock = productInfo.stock + product.quantity;
+                await Product.updateOne({
+                    _id: product.product_id
+                }, {
+                    $set: {
+                        stock: newStock
+                    }
+                });
+
+            }
+
+            await Order.updateOne({ _id: id}, {
+                status: "canceled"
+            });
+        }
         req.flash('success', `Cập nhật trạng thái thành công!`);
     }else{
         
