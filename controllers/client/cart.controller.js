@@ -3,7 +3,7 @@ const Product = require("../../models/product.model");
 
 const productsHelper = require("../../helpers/products");
 
-//[GET] /cart/
+// [GET] /cart
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId;
 
@@ -19,6 +19,19 @@ module.exports.index = async (req, res) => {
                 deleted: false,
                 status: "active"
             }).select("title thumbnail slug price discountPercentage stock");
+
+            if(!productInfo){
+                await Cart.updateOne({
+                    _id: cartId
+                }, {
+                    $pull: { products : { product_id : productId } }
+                })
+            
+                // req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
+        
+                res.redirect("back");
+                return;
+            }
 
             productInfo.newPrice = productsHelper.newPriceProduct(productInfo);
             
@@ -103,7 +116,9 @@ module.exports.addPost = async (req, res) => {
         // Thêm mới product vào giỏ hàng
 
         if(quantity > productInfo.stock){
-            quantity = productInfo.stock
+            req.flash("error", `Bạn chỉ có thêm tối đa ${productInfo.stock} sản phẩm vào giỏ`);
+            res.redirect("back");
+            return;
         }
 
         const objectCart = {
@@ -181,7 +196,7 @@ module.exports.update = async (req, res) => {
         }
     })
 
-    req.flash("success", "Cập nhật số lượng thành công");
+    // req.flash("success", "Cập nhật số lượng thành công");
 
     res.redirect("back");
 }

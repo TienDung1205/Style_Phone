@@ -97,9 +97,9 @@ module.exports.changeMulti = async (req, res) =>{
             await Product.updateOne({ _id: id}, { 
                 position: position 
             });
-            req.flash('success', `Thay đổi vị trí thành công!`);
         }
-        
+        req.flash('success', `Thay đổi vị trí thành công!`);
+
     }else{
         
     }
@@ -153,7 +153,7 @@ module.exports.createPost = async (req, res) =>{
     const product = new Product(req.body);
     await product.save();
     
-    res.redirect(`${systemConfig.prefixAdmin}/products`);
+    res.redirect(`back`);
 }
 
 // [GET] /admin/products/edit/:id

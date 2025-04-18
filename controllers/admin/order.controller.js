@@ -112,6 +112,20 @@ module.exports.changeMulti = async (req, res) =>{
     const type = req.body.type;
     const ids = req.body.ids.split(", ");
 
+    for (const id of ids) {
+        const order = await Order.findOne({ _id: id});
+
+        if(order && order.status === "canceled"){
+            req.flash("error", "Không thể thực hiện thao tác trên các đơn hàng đã hủy. Vui lòng chọn lại.");
+            res.redirect("back");
+            return; // Dừng toàn bộ quá trình cập nhật
+        } else if (!order) {
+            req.flash("error", `Không tìm thấy đơn hàng.`);
+            res.redirect("back");
+            return;
+        }
+    }
+
     if(type == "success"){
         await Order.updateMany({ _id: { $in: ids }}, {status : type});
         req.flash('success', `Cập nhật trạng thái thành công!`);
