@@ -471,6 +471,13 @@ module.exports.canceledItem = async (req, res) =>{
     const id = req.params.id;
 
     const order = await Order.findOne({ _id: id});
+
+    if(order.status != "processing"){
+        req.flash("error", `Không thể hủy đơn hàng này`);
+        res.redirect("back");
+        return;
+    }
+
     for (const product of order.products) {
         const productInfo = await Product.findOne({
             _id: product.product_id

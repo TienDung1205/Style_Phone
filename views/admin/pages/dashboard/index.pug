@@ -15,6 +15,7 @@ block main
                         p Số lượng: <b>#{statistic.productCategory.total}</b>
                         p Hoạt động: <b>#{statistic.productCategory.active}</b>
                         p Dừng hoạt động: <b>#{statistic.productCategory.inactive}</b>
+                        p Đã xóa: <b>#{statistic.productCategory.deleted}</b>
         .col-5
             a(href=`${prefixAdmin}/products`)
                 .card.mb-3
@@ -23,6 +24,7 @@ block main
                         p Số lượng: <b>#{statistic.product.total}</b>
                         p Hoạt động: <b>#{statistic.product.active}</b>
                         p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
+                        p Đã xóa: <b>#{statistic.product.deleted}</b>
         .col-5
             a(href=`${prefixAdmin}/users`)
                 .card.mb-3
@@ -31,6 +33,7 @@ block main
                         p Số lượng: <b>#{statistic.user.total}</b>
                         p Hoạt động: <b>#{statistic.user.active}</b>
                         p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
+                        p Đã xóa: <b>#{statistic.user.deleted}</b>
         .col-5
             a(href=`${prefixAdmin}/orders`)
                 .card.mb-3

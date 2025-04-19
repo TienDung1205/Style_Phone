@@ -7,19 +7,22 @@ module.exports.dashboard = async (req, res) => {
 
     const statistic = {
         productCategory:{
-            total: await ProductCategory.countDocuments({deleted: false}),
+            total: await ProductCategory.countDocuments(),
             active: await ProductCategory.countDocuments({deleted: false, status: "active"}),
-            inactive: await ProductCategory.countDocuments({deleted: false, status: "inactive"})
+            inactive: await ProductCategory.countDocuments({deleted: false, status: "inactive"}),
+            deleted: await ProductCategory.countDocuments({deleted: true})
         },
         product:{
-            total: await Product.countDocuments({deleted: false}),
+            total: await Product.countDocuments(),
             active: await Product.countDocuments({deleted: false, status: "active"}),
-            inactive: await Product.countDocuments({deleted: false, status: "inactive"})
+            inactive: await Product.countDocuments({deleted: false, status: "inactive"}),
+            deleted: await Product.countDocuments({deleted: true})
         },
         user:{
-            total: await User.countDocuments({deleted: false}),
+            total: await User.countDocuments(),
             active: await User.countDocuments({deleted: false, status: "active"}),
-            inactive: await User.countDocuments({deleted: false, status: "inactive"})
+            inactive: await User.countDocuments({deleted: false, status: "inactive"}),
+            deleted: await User.countDocuments({deleted: true})
         },
         order:{
             total: await Order.countDocuments(),
