@@ -106,3 +106,21 @@ phoneInputs.forEach(phoneInput => {
 });
 
 // End Check Phone
+
+// Thêm vào giỏ hàng và Mua ngay
+// Lấy các phần tử input số lượng từ DOM
+document.addEventListener("DOMContentLoaded", () => {
+    const quantityInput = document.getElementById("quantity-input");
+    const cartQuantityInput = document.getElementById("cart-quantity");
+    const buyNowQuantityInput = document.getElementById("buy-now-quantity");
+
+    // Đồng bộ giá trị khi form "Thêm vào giỏ hàng" được submit
+    document.getElementById("add-to-cart-form").addEventListener("submit", (e) => {
+        cartQuantityInput.value = quantityInput.value;
+    });
+
+    // Đồng bộ giá trị khi form "Mua ngay" được submit
+    document.getElementById("buy-now-form").addEventListener("submit", (e) => {
+        buyNowQuantityInput.value = quantityInput.value;
+    });
+});

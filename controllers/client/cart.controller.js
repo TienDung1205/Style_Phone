@@ -60,15 +60,8 @@ module.exports.addPost = async (req, res) => {
     const cartId = req.cookies.cartId;
 
     // Xóa sản phẩm khỏi giỏ hàng
-    if(quantity < 0){
-        await Cart.updateOne({
-            _id: cartId
-        }, {
-            $pull: { products : { product_id : productId } }
-        })
-    
-        req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
-
+    if(quantity <= 0){
+        req.flash("error", "Số lượng sản phẩm muốn thêm không hợp lệ!");
         res.redirect("back");
         return;
     }

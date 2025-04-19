@@ -1,0 +1,76 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+    +alert-error(5000)
+
+    .container.my-3
+        .row
+            .col-12
+                +box-head(pageTitle)
+        
+        .row
+            .col-12
+                table(class="table table-bordered")
+                    thead
+                        tr
+                            th Ảnh
+                            th Tên
+                            th Giá
+                            th Số lượng
+                            th Tổng tiền
+                    tbody 
+                        tr 
+                            td 
+                                img(src=product.thumbnail, alt=product.title width="80px")
+                            td #{product.title}
+                            td #{product.newPrice.toLocaleString('vi-VN')}đ
+                            td #{quantity}
+                            td #{totalPrice.toLocaleString('vi-VN')}đ
+
+                h3(class="text-right") Tổng đơn hàng : #{totalPrice.toLocaleString('vi-VN')}đ
+
+        .row 
+            .col-12
+                .card.p-4.my-4 
+                    form(
+                        action="/checkout/buy-now/order"
+                        method="POST"
+                    )
+                        div(class="form-group")
+                            label(for="fullName") Họ tên *
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="fullName"
+                                name="fullName"
+                                required
+                                value= user ? user.fullName : ""
+                            )
+                        div(class="form-group")
+                            label(for="phone") Số điện thoại *
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                required
+                                value= user ? user.phone : ""
+                            )
+                        div(class="form-group")
+                            label(for="address") Địa chỉ *
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="address"
+                                name="address"
+                                required
+                                value= user ? user.address : ""
+                            )
+                        input(type="hidden" name="productId" value=product._id)
+                        input(type="hidden" name="quantity" value=quantity)
+                        div(class="form-group")
+                            button(
+                                type="submit"
+                                class="btn btn-success btn-block"
+                            ) Đặt hàng

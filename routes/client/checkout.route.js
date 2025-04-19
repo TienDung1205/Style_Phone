@@ -12,4 +12,8 @@ router.post("/order", validate.order, controller.order);
 
 router.get("/success/:orderId", authMiddleware.requireAuth, controller.success);
 
+router.get('/:productId', authMiddleware.requireAuth, controller.buyNow);
+
+router.post('/buy-now/order', validate.order, controller.buyNowOrder);
+
 module.exports = router;
