@@ -108,63 +108,111 @@ module.exports.index = async (req, res) =>{
 }
 
 // [PATCH] /admin/orders/change-multi
-module.exports.changeMulti = async (req, res) =>{
-    const type = req.body.type;
-    const ids = req.body.ids.split(", ");
+module.exports.changeMulti = async (req, res) => {
+    const type = req.body.type; // Trạng thái mới
+    const ids = req.body.ids.split(", "); // Danh sách ID đơn hàng
+    const errors = []; // Mảng lưu lỗi
 
-    for (const id of ids) {
-        const order = await Order.findOne({ _id: id});
-
-        if(order && order.status === "canceled"){
-            req.flash("error", "Không thể thực hiện thao tác trên các đơn hàng đã hủy. Vui lòng chọn lại.");
-            res.redirect("back");
-            return; // Dừng toàn bộ quá trình cập nhật
-        } else if (!order) {
-            req.flash("error", `Không tìm thấy đơn hàng.`);
-            res.redirect("back");
-            return;
-        }
-    }
-
-    if(type == "success"){
-        await Order.updateMany({ _id: { $in: ids }}, {status : type});
-        req.flash('success', `Cập nhật trạng thái thành công!`);
-    }else if (type == "delivering") {
-        await Order.updateMany({ _id: { $in: ids }}, {status : type});
-        req.flash('success', `Cập nhật trạng thái thành công!`);
-    }else if (type == "processing") {
-        await Order.updateMany({ _id: { $in: ids }}, {status : type});
-        req.flash('success', `Cập nhật trạng thái thành công!`);
-    }else if (type == "canceled") {
+    try {
+        // Kiểm tra toàn bộ điều kiện trước khi cập nhật
         for (const id of ids) {
-            const order = await Order.findOne({ _id: id});
-            for (const product of order.products) {
-                const productInfo = await Product.findOne({
-                    _id: product.product_id
-                }).select("stock");
+            const order = await Order.findOne({ _id: id });
 
-                const newStock = productInfo.stock + product.quantity;
-                await Product.updateOne({
-                    _id: product.product_id
-                }, {
-                    $set: {
-                        stock: newStock
-                    }
-                });
-
+            if (!order) {
+                errors.push(`Không tìm thấy đơn hàng với mã: ${order.code}`);
+                continue;
             }
 
-            await Order.updateOne({ _id: id}, {
-                status: "canceled"
-            });
-        }
-        req.flash('success', `Cập nhật trạng thái thành công!`);
-    }else{
-        
-    }
+            // Kiểm tra trạng thái hợp lệ
+            const validTransitions = {
+                processing: ["delivering", "canceled"],
+                delivering: ["success", "canceled"],
+                success: ["canceled"],
+                canceled: ["processing"]
+            };
 
-    res.redirect("back");
-}
+            if (!validTransitions[order.status].includes(type)) {
+                errors.push(`Không thể chuyển trạng thái từ "${order.status}" sang "${type}" (mã: ${order.code}).`);
+                continue;
+            }
+
+            // Kiểm tra số lượng sản phẩm trong kho nếu cần
+            if (type === "canceled" && order.status !== "canceled") {
+                for (const product of order.products) {
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("stock title");
+
+                    if (!productInfo) {
+                        errors.push(`Không tìm thấy sản phẩm: ${productInfo.title}.`);
+                        continue;
+                    }
+                }
+            }
+
+            if (order.status === "canceled" && type !== "canceled") {
+                for (const product of order.products) {
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("title stock");
+
+                    if (!productInfo) {
+                        errors.push(`Không tìm thấy sản phẩm: ${productInfo.title}.`);
+                        continue;
+                    }
+
+                    // Kiểm tra số lượng sản phẩm trong kho
+                    if (productInfo.stock < product.quantity) {
+                        errors.push(`Trong kho: ${productInfo.title} chỉ còn ${productInfo.stock} sản phẩm.`);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // Nếu có lỗi, dừng lại và hiển thị tất cả lỗi
+        if (errors.length > 0) {
+            req.flash("error", errors.join(" "));
+            return res.redirect("back");
+        }
+
+        // Nếu không có lỗi, thực hiện cập nhật
+        for (const id of ids) {
+            const order = await Order.findOne({ _id: id });
+
+            // Nếu chuyển từ trạng thái khác sang "canceled", cộng lại số lượng sản phẩm vào kho
+            if (type === "canceled" && order.status !== "canceled") {
+                for (const product of order.products) {
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("stock");
+
+                    const newStock = productInfo.stock + product.quantity;
+                    await Product.updateOne(
+                        { _id: product.product_id },
+                        { $set: { stock: newStock } }
+                    );
+                }
+            }
+
+            // Nếu chuyển từ "canceled" sang trạng thái khác, trừ số lượng sản phẩm trong kho
+            if (order.status === "canceled" && type !== "canceled") {
+                for (const product of order.products) {
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("stock");
+
+                    const newStock = productInfo.stock - product.quantity;
+                    await Product.updateOne(
+                        { _id: product.product_id },
+                        { $set: { stock: newStock } }
+                    );
+                }
+            }
+
+            // Cập nhật trạng thái đơn hàng
+            await Order.updateOne({ _id: id }, { status: type });
+        }
+
+        req.flash("success", "Cập nhật trạng thái đơn hàng thành công!");
+        res.redirect("back");
+    } catch (error) {
+        req.flash("error", "Đã xảy ra lỗi. Vui lòng thử lại!");
+        res.redirect("back");
+    }
+};
 
 // [DELETE] /admin/orders/delete/:id
 module.exports.deleteItem = async (req, res) =>{

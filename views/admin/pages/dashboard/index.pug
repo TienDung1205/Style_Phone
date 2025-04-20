@@ -17,15 +17,6 @@ block main
                         p Dừng hoạt động: <b>#{statistic.productCategory.inactive}</b>
                         p Đã xóa: <b>#{statistic.productCategory.deleted}</b>
         .col-5
-            a(href=`${prefixAdmin}/products`)
-                .card.mb-3
-                    .card-header Danh sách sản phẩm 
-                    .card-body 
-                        p Số lượng: <b>#{statistic.product.total}</b>
-                        p Hoạt động: <b>#{statistic.product.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
-                        p Đã xóa: <b>#{statistic.product.deleted}</b>
-        .col-5
             a(href=`${prefixAdmin}/users`)
                 .card.mb-3
                     .card-header Danh sách khách hàng
@@ -34,6 +25,16 @@ block main
                         p Hoạt động: <b>#{statistic.user.active}</b>
                         p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
                         p Đã xóa: <b>#{statistic.user.deleted}</b>
+        .col-5
+            a(href=`${prefixAdmin}/products`)
+                .card.mb-3
+                    .card-header Danh sách sản phẩm 
+                    .card-body 
+                        p Số lượng: <b>#{statistic.product.total}</b>
+                        p Nổi bật: <b>#{statistic.product.featured}</b>
+                        p Hoạt động: <b>#{statistic.product.active}</b>
+                        p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
+                        p Đã xóa: <b>#{statistic.product.deleted}</b>
         .col-5
             a(href=`${prefixAdmin}/orders`)
                 .card.mb-3

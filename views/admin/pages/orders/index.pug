@@ -7,7 +7,7 @@ include ../../mixins/form-change-multi-orders.pug
 
 block main 
     +alert-success(3000)
-    +alert-error(5000)
+    +alert-error(10000)
 
     h1(class = "mb-4") Trang đặt hàng
 
@@ -49,15 +49,12 @@ block main
                     tbody 
                         each item, index in records
                             tr 
-                                if(item.status != "canceled")
-                                    td
-                                        input(
-                                            type="checkbox"
-                                            name="id"
-                                            value=item.id
-                                        )
-                                else 
-                                    td
+                                td
+                                    input(
+                                        type="checkbox"
+                                        name="id"
+                                        value=item.id
+                                    )
                                 td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 td #{item.code}
                                 td #{item.user ? (item.user.email ? item.user.email : "") : ""}

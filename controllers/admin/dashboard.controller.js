@@ -16,6 +16,7 @@ module.exports.dashboard = async (req, res) => {
             total: await Product.countDocuments(),
             active: await Product.countDocuments({deleted: false, status: "active"}),
             inactive: await Product.countDocuments({deleted: false, status: "inactive"}),
+            featured: await Product.countDocuments({deleted: false, featured: "1"}),
             deleted: await Product.countDocuments({deleted: true})
         },
         user:{
