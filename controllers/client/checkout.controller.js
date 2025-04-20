@@ -168,7 +168,7 @@ module.exports.success = async (req, res) => {
 module.exports.buyNow = async (req, res) => {
     try {
         const productId = req.params.productId;
-        const quantity = parseInt(req.query.quantity, 10);
+        let quantity = parseInt(req.query.quantity, 10);
 
         // Lấy thông tin sản phẩm từ database
         const product = await Product.findOne({
@@ -183,17 +183,18 @@ module.exports.buyNow = async (req, res) => {
             return;
         }
 
-        if(quantity <= 0){
-            req.flash("error", "Số lượng sản phẩm muốn mua không hợp lệ!");
-            res.redirect("back");
-            return;
+        if (isNaN(quantity) || quantity <= 0) {
+            quantity = 1;
         }
 
         // Kiểm tra số lượng yêu cầu
         if (quantity > product.stock) {
-            req.flash("error", `Số lượng yêu cầu vượt quá số lượng tồn kho. Chỉ còn ${product.stock} sản phẩm.`);
-            res.redirect("back");
-            return;
+            if (product.stock == 0) {
+                req.flash("error", `Sản phẩm tạm hết`);  
+                res.redirect("back");
+                return;
+            }
+            quantity = product.stock;
         }
 
         // Tính giá mới của sản phẩm

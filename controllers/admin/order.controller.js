@@ -111,7 +111,6 @@ module.exports.index = async (req, res) =>{
 module.exports.changeMulti = async (req, res) => {
     const type = req.body.type; // Trạng thái mới
     const ids = req.body.ids.split(", "); // Danh sách ID đơn hàng
-    const errors = []; // Mảng lưu lỗi
 
     try {
         // Kiểm tra toàn bộ điều kiện trước khi cập nhật
@@ -119,31 +118,31 @@ module.exports.changeMulti = async (req, res) => {
             const order = await Order.findOne({ _id: id });
 
             if (!order) {
-                errors.push(`Không tìm thấy đơn hàng với mã: ${order.code}`);
-                continue;
+                req.flash("error", `Không tìm thấy đơn hàng: ${order.code}`);
+                return res.redirect("back");
             }
 
             // Kiểm tra trạng thái hợp lệ
             const validTransitions = {
-                processing: ["delivering", "canceled"],
-                delivering: ["success", "canceled"],
+                processing: ["delivering", "success", "canceled"],
+                delivering: ["processing", "success", "canceled"],
                 success: ["canceled"],
                 canceled: ["processing"]
             };
 
             if (!validTransitions[order.status].includes(type)) {
-                errors.push(`Không thể chuyển trạng thái từ "${order.status}" sang "${type}" (mã: ${order.code}).`);
-                continue;
+                req.flash("error", `Không thể chuyển từ "${order.status}" sang "${type}" đơn hàng: ${order.code}`);
+                return res.redirect("back");
             }
 
             // Kiểm tra số lượng sản phẩm trong kho nếu cần
             if (type === "canceled" && order.status !== "canceled") {
                 for (const product of order.products) {
-                    const productInfo = await Product.findOne({ _id: product.product_id }).select("stock title");
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("title stock");
 
                     if (!productInfo) {
-                        errors.push(`Không tìm thấy sản phẩm: ${productInfo.title}.`);
-                        continue;
+                        req.flash("error", `Không tìm thấy sản phẩm: ${productInfo.title}.`);
+                        return res.redirect("back");
                     }
                 }
             }
@@ -153,23 +152,17 @@ module.exports.changeMulti = async (req, res) => {
                     const productInfo = await Product.findOne({ _id: product.product_id }).select("title stock");
 
                     if (!productInfo) {
-                        errors.push(`Không tìm thấy sản phẩm: ${productInfo.title}.`);
-                        continue;
+                        req.flash("error", `Không tìm thấy sản phẩm: ${productInfo.title}.`);
+                        return res.redirect("back");
                     }
 
                     // Kiểm tra số lượng sản phẩm trong kho
                     if (productInfo.stock < product.quantity) {
-                        errors.push(`Trong kho: ${productInfo.title} chỉ còn ${productInfo.stock} sản phẩm.`);
-                        continue;
+                        req.flash("error", `${productInfo.title} chỉ còn ${productInfo.stock} sản phẩm.`);
+                        return res.redirect("back");
                     }
                 }
             }
-        }
-
-        // Nếu có lỗi, dừng lại và hiển thị tất cả lỗi
-        if (errors.length > 0) {
-            req.flash("error", errors.join(" "));
-            return res.redirect("back");
         }
 
         // Nếu không có lỗi, thực hiện cập nhật
