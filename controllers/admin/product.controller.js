@@ -49,13 +49,14 @@ module.exports.index = async (req, res) =>{
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
 
-    res.render("admin/pages/products/index.pug", {
-        pageTitle:"Danh sách sản phẩm",
-        products: products,
-        filterStatus: filterStatus,
-        keyword: objectSearch.keyword,
-        pagination: objectPagination
-    });
+    // res.render("admin/pages/products/index.pug", {
+    //     pageTitle:"Danh sách sản phẩm",
+    //     products: products,
+    //     filterStatus: filterStatus,
+    //     keyword: objectSearch.keyword,
+    //     pagination: objectPagination
+    // });
+    res.json(products);
 }
 
 // [PATCH] /admin/products/change-status/:status/:id

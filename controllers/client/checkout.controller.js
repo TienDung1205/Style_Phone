@@ -8,36 +8,50 @@ const productsHelper = require("../../helpers/products");
 
 //[GET] /checkout/
 module.exports.index = async (req, res) => {
-    const cartId = req.cookies.cartId;
+    try {
+        const cartId = req.cookies.cartId;
 
-    const cart = await Cart.findOne({
-        _id: cartId
-    })
+        const cart = await Cart.findOne({ _id: cartId });
 
-    if (cart.products.length > 0) {
-        for (const item of cart.products) {
-            const productId = item.product_id;
-            const productInfo = await Product.findOne({
-                _id: productId,
-                deleted: false,
-                status: "active"
-            }).select("title thumbnail slug price discountPercentage");
-
-            productInfo.newPrice = productsHelper.newPriceProduct(productInfo)
-
-            item.productInfo = productInfo;
-
-            item.totalPrice = productInfo.newPrice * item.quantity;
+        if (!cart) {
+            return res.status(404).json({
+                success: false,
+                message: "Giỏ hàng không tồn tại!"
+            });
         }
+
+        if (cart.products.length > 0) {
+            for (const item of cart.products) {
+                const productId = item.product_id;
+                const productInfo = await Product.findOne({
+                    _id: productId,
+                    deleted: false,
+                    status: "active"
+                }).select("title thumbnail slug price discountPercentage");
+
+                if (productInfo) {
+                    productInfo.newPrice = productsHelper.newPriceProduct(productInfo);
+                    item.productInfo = productInfo;
+                    item.totalPrice = productInfo.newPrice * item.quantity;
+                }
+            }
+        }
+
+        cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        return res.status(200).json({
+            success: true,
+            message: "Chi tiết giỏ hàng",
+            data: cart
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi!",
+            error: error.message
+        });
     }
-
-    cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-
-    res.render("client/pages/checkout/index.pug", {
-        pageTitle: "Đặt hàng",
-        cartDetail: cart
-    });
-}
+};
 
 //[POST] /checkout/order
 module.exports.order = async (req, res) => {
@@ -47,14 +61,15 @@ module.exports.order = async (req, res) => {
     try {
         const cart = await Cart.findOne({ _id: cartId });
         if (!cart) {
-            req.flash("error", "Giỏ hàng không tồn tại!");
-            res.redirect("back");
-            return;
+            return res.status(404).json({
+                success: false,
+                message: "Giỏ hàng không tồn tại!"
+            });
         }
 
-        const updatedProducts = []; // Mảng chứa thông tin sản phẩm sau khi kiểm tra
-        const removedProductTitles = []; // Mảng chứa tên các sản phẩm bị xóa
-        let hasChanges = false; // Biến theo dõi nếu có bất kỳ thay đổi nào (xóa hoặc điều chỉnh)
+        const updatedProducts = [];
+        const removedProductTitles = [];
+        let hasChanges = false;
 
         for (const cartProduct of cart.products) {
             const productInfo = await Product.findOne({
@@ -62,19 +77,13 @@ module.exports.order = async (req, res) => {
             }).select("title price discountPercentage stock");
 
             if (!productInfo) {
-                req.flash('error', `Sản phẩm ${cartProduct.title} không tồn tại.`);
                 hasChanges = true;
                 continue;
             }
 
             if (productInfo.stock > 0) {
-                // Nếu còn hàng, thêm sản phẩm vào mảng updatedProducts (điều chỉnh số lượng nếu cần)
                 const quantityToOrder = Math.min(cartProduct.quantity, productInfo.stock);
                 if (quantityToOrder < cartProduct.quantity) {
-                    // req.flash(
-                    //     "error",
-                    //     `Sản phẩm ${productInfo.title} chỉ còn ${productInfo.stock} sản phẩm.`
-                    // );
                     hasChanges = true;
                 }
                 updatedProducts.push({
@@ -84,7 +93,6 @@ module.exports.order = async (req, res) => {
                     quantity: quantityToOrder,
                 });
             } else {
-                // Nếu hết hàng (stock === 0), thêm tên sản phẩm vào mảng removedProductTitles
                 removedProductTitles.push(productInfo.title);
                 hasChanges = true;
             }
@@ -92,18 +100,13 @@ module.exports.order = async (req, res) => {
 
         if (hasChanges) {
             await Cart.updateOne({ _id: cartId }, { products: updatedProducts });
-            if (removedProductTitles.length > 0) {
-                // req.flash(
-                //     "error",
-                //     `Các sản phẩm sau đã hết hàng và đã được xóa khỏi giỏ hàng của bạn: ${removedProductTitles.join(", ")}.`
-                // );
-            }
-            req.flash("error", " Sản phẩm bạn muốn mua không còn đủ số lượng và đã dược cập nhật lại số lượng trong giỏ hàng. Vui lòng kiểm tra lại trước khi tiến hành thanh toán.");
-            res.redirect("/cart");
-            return;
+            return res.status(400).json({
+                success: false,
+                message: "Một số sản phẩm đã được cập nhật lại số lượng hoặc bị xóa khỏi giỏ hàng.",
+                removedProducts: removedProductTitles
+            });
         }
 
-        // Nếu không có thay đổi nào (không có sản phẩm bị xóa hoặc điều chỉnh), tiến hành tạo đơn hàng
         const orderInfo = {
             cart_id: cartId,
             userInfo: userInfo,
@@ -129,40 +132,60 @@ module.exports.order = async (req, res) => {
         }
 
         await Cart.updateOne({ _id: cartId }, { products: [] });
-        res.redirect(`/checkout/success/${order.id}`);
 
+        return res.status(201).json({
+            success: true,
+            message: "Đơn hàng đã được tạo thành công!",
+            data: order
+        });
     } catch (error) {
-        console.error("Lỗi trong quá trình xử lý đơn hàng:", error);
-        req.flash("error", "Đã có lỗi xảy ra trong quá trình xử lý đơn hàng. Vui lòng thử lại sau!");
-        res.redirect("back");
+        return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi trong quá trình xử lý đơn hàng!",
+            error: error.message
+        });
     }
 };
 
 //[POST] /checkout/success/:orderId
 module.exports.success = async (req, res) => {
-    const order = await Order.findOne({
-        _id: req.params.orderId
-    })
+    try {
+        const order = await Order.findOne({ _id: req.params.orderId });
 
-    for (const product of order.products) {
-        const productInfo = await Product.findOne({
-            _id : product.product_id
-        }).select("title thumbnail")
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Đơn hàng không tồn tại!"
+            });
+        }
 
-        product.productInfo = productInfo;
+        for (const product of order.products) {
+            const productInfo = await Product.findOne({
+                _id: product.product_id
+            }).select("title thumbnail");
 
-        product.newPrice = productsHelper.newPriceProduct(product);
+            if (productInfo) {
+                product.productInfo = productInfo;
+                product.newPrice = productsHelper.newPriceProduct(product);
+                product.totalPrice = product.newPrice * product.quantity;
+            }
+        }
 
-        product.totalPrice = product.newPrice * product.quantity;
+        order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        return res.status(200).json({
+            success: true,
+            message: "Chi tiết đơn hàng",
+            data: order
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi!",
+            error: error.message
+        });
     }
-
-    order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice , 0)
-
-    res.render("client/pages/checkout/success.pug", {
-        pageTitle: "Đặt hàng thành công",
-        order: order
-    });
-}
+};
 
 //[GET] /checkout/:productId
 module.exports.buyNow = async (req, res) => {
@@ -170,7 +193,6 @@ module.exports.buyNow = async (req, res) => {
         const productId = req.params.productId;
         let quantity = parseInt(req.query.quantity, 10);
 
-        // Lấy thông tin sản phẩm từ database
         const product = await Product.findOne({
             _id: productId,
             deleted: false,
@@ -178,47 +200,51 @@ module.exports.buyNow = async (req, res) => {
         }).select("title thumbnail slug price discountPercentage stock");
 
         if (!product) {
-            req.flash("error", "Sản phẩm không tồn tại!");
-            res.redirect("back");
-            return;
+            return res.status(404).json({
+                success: false,
+                message: "Sản phẩm không tồn tại!"
+            });
         }
 
         if (isNaN(quantity) || quantity <= 0) {
             quantity = 1;
         }
 
-        // Kiểm tra số lượng yêu cầu
         if (quantity > product.stock) {
-            if (product.stock == 0) {
-                req.flash("error", `Sản phẩm tạm hết`);  
-                res.redirect("back");
-                return;
+            if (product.stock === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Sản phẩm tạm hết hàng!"
+                });
             }
             quantity = product.stock;
         }
 
-        // Tính giá mới của sản phẩm
         product.newPrice = productsHelper.newPriceProduct(product);
 
-        // Nếu hợp lệ, chuyển đến giao diện thanh toán
-        res.render("client/pages/checkout/buy-now.pug", {
-            pageTitle: "Đặt hàng ngay",
-            product,
-            quantity: quantity,
-            totalPrice: product.newPrice * quantity,
+        return res.status(200).json({
+            success: true,
+            message: "Chi tiết sản phẩm để đặt hàng ngay",
+            data: {
+                product,
+                quantity,
+                totalPrice: product.newPrice * quantity
+            }
         });
     } catch (error) {
-        req.flash("error", "Đã có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại sau!");
-        res.redirect("back");
+        return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi!",
+            error: error.message
+        });
     }
 };
 
-//[POST] /checkout//buy-now/order
+//[POST] /checkout/buy-now/order
 module.exports.buyNowOrder = async (req, res) => {
     try {
         const { productId, quantity, fullName, phone, address } = req.body;
 
-        // Lấy thông tin sản phẩm từ database
         const product = await Product.findOne({
             _id: productId,
             deleted: false,
@@ -226,22 +252,20 @@ module.exports.buyNowOrder = async (req, res) => {
         }).select("title stock price discountPercentage");
 
         if (!product) {
-            req.flash("error", "Sản phẩm không tồn tại!");
-            return res.redirect("back");
+            return res.status(404).json({
+                success: false,
+                message: "Sản phẩm không tồn tại!"
+            });
         }
 
-        // Kiểm tra số lượng yêu cầu
         const requestedQuantity = parseInt(quantity, 10);
         if (requestedQuantity > product.stock) {
-            req.flash("error", `Số lượng yêu cầu vượt quá số lượng tồn kho. Chỉ còn ${product.stock} sản phẩm.`);
-            return res.redirect("back");
+            return res.status(400).json({
+                success: false,
+                message: `Số lượng yêu cầu vượt quá số lượng tồn kho. Chỉ còn ${product.stock} sản phẩm.`
+            });
         }
 
-        // Tính giá mới của sản phẩm
-        // const newPrice = productsHelper.newPriceProduct(product);
-        // const totalPrice = newPrice * requestedQuantity;
-
-        // Tạo đơn hàng
         const orderInfo = {
             userInfo: {
                 fullName,
@@ -258,26 +282,26 @@ module.exports.buyNowOrder = async (req, res) => {
             ]
         };
 
-        if(res.locals.user) {
-            orderInfo.user_id = res.locals.user._id;
-        }
-
         const order = new Order(orderInfo);
         order.code = generateHelper.generateRandomString(10);
         const countOrders = await Order.countDocuments();
         order.position = countOrders + 1;
 
-        // // Lưu đơn hàng vào database
         await order.save();
 
-        // // Cập nhật số lượng tồn kho
         product.stock -= requestedQuantity;
         await product.save();
 
-        // // Chuyển đến trang xác nhận thành công
-        res.redirect(`/checkout/success/${order._id}`);
+        return res.status(201).json({
+            success: true,
+            message: "Đơn hàng đã được tạo thành công!",
+            data: order
+        });
     } catch (error) {
-        req.flash("error", "Đã có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại sau!");
-        res.redirect("back");
+        return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi trong quá trình xử lý đơn hàng!",
+            error: error.message
+        });
     }
 };

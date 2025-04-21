@@ -33,11 +33,12 @@ module.exports.index = async (req, res) => {
 
     const newProducts = productsHelper.newPriceProducts(products);
     
-    res.render("client/pages/products/index.pug", {
-        pageTitle: "Danh sách sản phẩm",
-        products: newProducts,
-        pagination: objectPagination
-    });
+    // res.render("client/pages/products/index.pug", {
+    //     pageTitle: "Danh sách sản phẩm",
+    //     products: newProducts,
+    //     pagination: objectPagination
+    // });
+    res.json(newProducts);
 }
 
 // [GET]/products/:slug
@@ -63,10 +64,11 @@ module.exports.detail = async (req, res) => {
 
         product.newPrice = productsHelper.newPriceProduct(product);
 
-        res.render("client/pages/products/detail.pug", {
-            pageTitle: product.title,
-            product: product
-        });
+        // res.render("client/pages/products/detail.pug", {
+        //     pageTitle: product.title,
+        //     product: product
+        // });
+        res.json(product);
     } catch (error) {
         res.redirect(`/products`);
     }
@@ -112,11 +114,12 @@ module.exports.category = async (req, res) => {
 
         const newProducts = productsHelper.newPriceProducts(products);
 
-        res.render("client/pages/products/index.pug", {
-            pageTitle: category.title,
-            products: newProducts,
-            pagination: objectPagination
-        });
+        // res.render("client/pages/products/index.pug", {
+        //     pageTitle: category.title,
+        //     products: newProducts,
+        //     pagination: objectPagination
+        // });
+        res.json(newProducts);
 
     } catch (error) {
         res.redirect(`/products`);
