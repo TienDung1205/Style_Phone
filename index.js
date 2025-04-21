@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 require("dotenv").config();
+const cors = require('cors');
 
 const database = require("./config/database");
 
@@ -18,6 +19,8 @@ database.connect();
 
 const app = express();
 const port = process.env.PORT;
+
+app.use(cors());
 
 app.use(methodOverride('_method'));
 
