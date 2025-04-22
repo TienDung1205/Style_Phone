@@ -7,37 +7,41 @@ const paginationHelper = require("../../helpers/pagination");
 
 // [GET]/products
 module.exports.index = async (req, res) => {
-    let find = {
-        status : "active",
-        deleted: false
+    try{
+        let find = {
+            status : "active",
+            deleted: false
+        }
+
+        // Pagination
+        const countProducts = await Product.countDocuments(find);
+
+        let objectPagination = paginationHelper(
+            {
+                limitItems: 8,
+                currentPage: 1
+            },
+            req.query,
+            countProducts
+        )
+        
+        // End Pagination
+
+        const products = await Product.find(find)
+        .sort({position : "desc"})
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip);
+
+        const newProducts = productsHelper.newPriceProducts(products);
+        
+        res.render("client/pages/products/index.pug", {
+            pageTitle: "Danh sách sản phẩm",
+            products: newProducts,
+            pagination: objectPagination
+        });
+    }catch (error) {
+        res.redirect("/products");
     }
-
-    // Pagination
-    const countProducts = await Product.countDocuments(find);
-
-    let objectPagination = paginationHelper(
-        {
-            limitItems: 8,
-            currentPage: 1
-        },
-        req.query,
-        countProducts
-    )
-    
-    // End Pagination
-
-    const products = await Product.find(find)
-    .sort({position : "desc"})
-    .limit(objectPagination.limitItems)
-    .skip(objectPagination.skip);
-
-    const newProducts = productsHelper.newPriceProducts(products);
-    
-    res.render("client/pages/products/index.pug", {
-        pageTitle: "Danh sách sản phẩm",
-        products: newProducts,
-        pagination: objectPagination
-    });
 }
 
 // [GET]/products/:slug

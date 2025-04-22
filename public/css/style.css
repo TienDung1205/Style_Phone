@@ -290,3 +290,13 @@
 .header .container .row .col-5 .inner-menu ul li:last-child {
     margin-right: 0; /* Loại bỏ margin bên phải của mục cuối cùng */
 }
+
+.nav-item .dropdown-menu {
+    background-color: #f8f9fa; /* Màu nền menu con */
+    border-radius: 5px; /* Bo góc */
+}
+
+.nav-item .dropdown-item:hover {
+    background-color: #e9ecef; /* Màu nền khi hover */
+    color: #000; /* Màu chữ khi hover */
+}

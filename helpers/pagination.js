@@ -9,10 +9,22 @@ module.exports = (objectPagination, query, count) =>{
         objectPagination.currentPage = 1;
     }
 
-    objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitItems;
+    // if(query.page){
+    //     objectPagination.currentPage = parseInt(query.page);
+    // }
+    // else{
+    //     objectPagination.currentPage = 1;
+    // }
 
     const totalPage = Math.ceil(count/objectPagination.limitItems);
     objectPagination.totalPage = totalPage;
+
+
+    if(objectPagination.currentPage > totalPage && totalPage != 0){
+        objectPagination.currentPage = totalPage;
+    }
+
+    objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitItems;
     
     return objectPagination;
 }

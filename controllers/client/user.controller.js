@@ -183,7 +183,10 @@ module.exports.loginPost = async (req, res) => {
         })
     }
 
-    res.cookie("tokenUser", user.tokenUser);
+    res.cookie("tokenUser", user.tokenUser, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true
+    });
     req.flash("success", `Đăng nhập thành công!`);
     res.redirect(`/`);
 }

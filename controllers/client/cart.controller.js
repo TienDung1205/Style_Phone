@@ -5,52 +5,57 @@ const productsHelper = require("../../helpers/products");
 
 // [GET] /cart
 module.exports.index = async (req, res) => {
-    const cartId = req.cookies.cartId;
+    try {
+        const cartId = req.cookies.cartId;
 
-    const cart = await Cart.findOne({
-        _id: cartId
-    })
+        const cart = await Cart.findOne({
+            _id: cartId
+        })
 
-    if (cart.products.length > 0) {
-        for (const item of cart.products) {
-            const productId = item.product_id;
-            const productInfo = await Product.findOne({
-                _id: productId,
-                deleted: false,
-                status: "active"
-            }).select("title thumbnail slug price discountPercentage stock");
+        if (cart.products.length > 0) {
+            for (const item of cart.products) {
+                const productId = item.product_id;
+                const productInfo = await Product.findOne({
+                    _id: productId,
+                    deleted: false,
+                    status: "active"
+                }).select("title thumbnail slug price discountPercentage stock");
 
-            if(!productInfo){
-                await Cart.updateOne({
-                    _id: cartId
-                }, {
-                    $pull: { products : { product_id : productId } }
-                })
-            
-                // req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
-        
-                res.redirect("back");
-                return;
-            }
+                if (!productInfo) {
+                    await Cart.updateOne({
+                        _id: cartId
+                    }, {
+                        $pull: {
+                            products: {
+                                product_id: productId
+                            }
+                        }
+                    })
+                    res.redirect("/");
+                    return;
+                }
 
-            productInfo.newPrice = productsHelper.newPriceProduct(productInfo);
-            
-            item.productInfo = productInfo;
+                productInfo.newPrice = productsHelper.newPriceProduct(productInfo);
 
-            item.totalPrice = productInfo.newPrice * item.quantity;
+                item.productInfo = productInfo;
 
-            if(item.quantity > productInfo.stock){
-                item.quantity = productInfo.stock
+                item.totalPrice = productInfo.newPrice * item.quantity;
+
+                if (item.quantity > productInfo.stock) {
+                    item.quantity = productInfo.stock
+                }
             }
         }
+
+        cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        res.render("client/pages/cart/index.pug", {
+            pageTitle: "Giỏ hàng",
+            cartDetail: cart
+        });
+    } catch (error) {
+        res.redirect("/");
     }
-
-    cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-
-    res.render("client/pages/cart/index.pug", {
-        pageTitle: "Giỏ hàng",
-        cartDetail: cart
-    });
 }
 
 //[POST] /cart/add/:productId
@@ -78,20 +83,20 @@ module.exports.addPost = async (req, res) => {
     const productInfo = await Product.findOne({
         _id: productId
     }).select("stock");
-    
+
     //End Số lượng tối đa của sản phẩm
 
     if (existProductInCart) {
         // Cập nhật lại số lượng product trong giỏ hàng
         let quantityNew = quantity + existProductInCart.quantity;
-        
-        if(productInfo.stock == existProductInCart.quantity){
+
+        if (productInfo.stock == existProductInCart.quantity) {
             req.flash("error", `Đã có ${existProductInCart.quantity} sản phẩm trong giỏ hàng. Bạn không thể thêm sản phẩm vào giỏ`);
             res.redirect("back");
             return;
         }
 
-        if(quantityNew > productInfo.stock){
+        if (quantityNew > productInfo.stock) {
             req.flash("error", `Đã có ${existProductInCart.quantity} sản phẩm trong giỏ hàng. Bạn chỉ có thêm tối đa ${productInfo.stock - existProductInCart.quantity} sản phẩm`);
             res.redirect("back");
             return;
@@ -108,7 +113,7 @@ module.exports.addPost = async (req, res) => {
     } else {
         // Thêm mới product vào giỏ hàng
 
-        if(quantity > productInfo.stock){
+        if (quantity > productInfo.stock) {
             req.flash("error", `Bạn chỉ có thêm tối đa ${productInfo.stock} sản phẩm vào giỏ`);
             res.redirect("back");
             return;
@@ -140,7 +145,11 @@ module.exports.delete = async (req, res) => {
     await Cart.updateOne({
         _id: cartId
     }, {
-        $pull: { products : { product_id : productId } }
+        $pull: {
+            products: {
+                product_id: productId
+            }
+        }
     })
 
     req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
@@ -154,13 +163,17 @@ module.exports.update = async (req, res) => {
     const productId = req.params.productId;
     let quantity = parseInt(req.params.quantity);
     // Xóa sản phẩm khỏi giỏ hàng
-    if(quantity <= 0){
+    if (quantity <= 0) {
         await Cart.updateOne({
             _id: cartId
         }, {
-            $pull: { products : { product_id : productId } }
+            $pull: {
+                products: {
+                    product_id: productId
+                }
+            }
         })
-    
+
         req.flash("success", "Đã xóa sản phẩm khỏi giỏ hàng!");
 
         res.redirect("back");
@@ -172,14 +185,14 @@ module.exports.update = async (req, res) => {
     const productInfo = await Product.findOne({
         _id: productId
     }).select("stock");
-    
-    if(quantity > productInfo.stock){
+
+    if (quantity > productInfo.stock) {
         req.flash("error", `Số lượng sản phẩm đã đạt tối đa!`);
         res.redirect("back");
         return;
     }
     //End Số lượng tối đa của sản phẩm
-    
+
     await Cart.updateOne({
         _id: cartId,
         'products.product_id': productId
