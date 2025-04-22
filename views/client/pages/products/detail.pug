@@ -40,7 +40,7 @@ block main
                             max=product.stock
                         )
                         hr
-                        form(
+                        form.prevent-double-submit(
                             id="add-to-cart-form"
                             action=`/cart/add/${product.id}`
                             method="POST"

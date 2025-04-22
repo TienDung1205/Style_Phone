@@ -1,5 +1,5 @@
 mixin form-change-multi-products(path)
-    form(
+    form.prevent-double-submit(
         action=path
         method="post"
         form-change-multi

@@ -10,7 +10,7 @@ block main
                 h1(class="mb-4") 
                     +box-head(pageTitle)
 
-                form(
+                form.prevent-double-submit(
                     action=`/user/edit/?_method=PATCH`
                     method="POST"
                     enctype="multipart/form-data"

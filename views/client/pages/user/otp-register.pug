@@ -10,7 +10,7 @@ block main
                 h1(class="text-center") #{pageTitle}
                 hr
                 p| Vui lòng kiểm tra mã trong email của bạn . Mã này gồm 6 số.
-                form(
+                form.prevent-double-submit(
                     action="/user/register/otp"
                     method="POST"
                 )

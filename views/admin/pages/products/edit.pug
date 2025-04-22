@@ -8,7 +8,7 @@ block main
     
     h1(class="mb-4") Chỉnh sửa sản phẩm 
 
-    form(
+    form.prevent-double-submit(
         action=`${prefixAdmin}/products/edit/${product.id}?_method=PATCH`
         id="form-edit-product"
         method="POST"

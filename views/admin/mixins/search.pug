@@ -1,5 +1,5 @@
 mixin search(keyword)
-    form(id="form-search")
+    form.prevent-double-submit(id="form-search")
         .input-group 
             input(
                 type="text"

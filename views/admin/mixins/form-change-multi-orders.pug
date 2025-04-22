@@ -1,5 +1,5 @@
 mixin form-change-multi-orders(path)
-    form(
+    form.prevent-double-submit(
         action=path
         method="POST"
         form-change-multi

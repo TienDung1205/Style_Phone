@@ -7,7 +7,7 @@ block main
 
     h1(class="mb-4") #{pageTitle}
 
-    form(
+    form.prevent-double-submit(
         action=`${prefixAdmin}/settings/general/?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"

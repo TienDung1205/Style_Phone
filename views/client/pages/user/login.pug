@@ -8,7 +8,7 @@ block main
         .row.justify-content-center 
             .col-5.border.p-3.rounded.shadow
                 h1(class="text-center") #{pageTitle}
-                form(
+                form.prevent-double-submit(
                     action="/user/login"
                     method="POST"
                 )

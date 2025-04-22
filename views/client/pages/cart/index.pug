@@ -48,7 +48,7 @@ block main
                                     td 
                                         a(
                                             href=`/cart/delete/${item.product_id}`
-                                            class="btn btn-danger"
+                                            class="btn btn-danger prevent-double-click"
                                         ) Xóa
                         else 
                             tr 
@@ -60,6 +60,6 @@ block main
                     h3(class="text-right") Tạm tính : #{cartDetail.totalPrice.toLocaleString('vi-VN')}đ
 
                     div(class="text-right mt-3")
-                        a(href="/checkout" class="btn btn-success btn-lg") MUA NGAY
+                        a(href="/checkout" class="btn-primary btn-lg") MUA NGAY
 
     script(src="/js/cart.js")

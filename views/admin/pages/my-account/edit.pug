@@ -6,7 +6,7 @@ block main
     +alert-success(3000)
     
     h1(class="mb-4") Cập nhật thông tin các nhân
-    form(
+    form.prevent-double-submit(
         action=`${prefixAdmin}/my-account/edit/?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"

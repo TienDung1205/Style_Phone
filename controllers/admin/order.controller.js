@@ -215,6 +215,8 @@ module.exports.deleteItem = async (req, res) =>{
         deleted: true,
         deletedAt: new Date()
     });
+
+    // await Order.deleteOne({ _id: id });
     
     req.flash('success', `Đã xóa thành công!`);
 

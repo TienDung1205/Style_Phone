@@ -271,3 +271,27 @@ phoneInputs.forEach(phoneInput => {
 });
 
 // End Check Phone
+
+// prevent-double-submit
+document.querySelectorAll("form.prevent-double-submit").forEach(form => {
+    const submitButton = form.querySelector('button[type="submit"]');
+    form.addEventListener("submit", function () {
+        submitButton.disabled = true;
+    });
+});
+// End prevent-double-submit
+
+// prevent-double-click
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".prevent-double-click").forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            link.style.pointerEvents = "none";
+            link.textContent = ".....";
+            setTimeout(() => {
+                window.location.href = link.getAttribute("href");
+            }, 300);
+        });
+    });
+});
+// End prevent-double-click

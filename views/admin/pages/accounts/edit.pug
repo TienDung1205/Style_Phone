@@ -6,7 +6,7 @@ block main
     +alert-success(3000)
     
     h1(class="mb-4") #{pageTitle}
-    form(
+    form.prevent-double-submit(
         action=`${prefixAdmin}/accounts/edit/${data.id}?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"

@@ -6,7 +6,7 @@ block main
     
     h1(class="mb-4") #{pageTitle}
 
-    form(
+    form.prevent-double-submit(
         action=`${prefixAdmin}/accounts/create`
         method="POST"
         enctype="multipart/form-data"

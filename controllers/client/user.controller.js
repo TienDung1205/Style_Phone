@@ -117,13 +117,24 @@ module.exports.otpRegisterPost = async (req, res) =>{
         password: register.password
     }
 
+    const existEmail = await User.findOne({
+        email: objectUser.email
+    });
+
+    if (existEmail) {
+        req.flash("error", "Email đã tồn tại!");
+        res.redirect("back");
+        return;
+    }
+
     const user = new User(objectUser);
     user.tokenUser = generateHelper.generateRandomString(30);
     await user.save();
 
     req.flash("success", "Đăng ký thành công!");
 
-    res.redirect("/user/login");
+    res.cookie("tokenUser", user.tokenUser);
+    res.redirect(`/`);
 }
 
 //[GET] /user/login

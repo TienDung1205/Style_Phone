@@ -170,6 +170,7 @@ module.exports.changeMulti = async (req, res) =>{
             deleted: true,
             deletedAt: new Date()
         });
+
         req.flash('success', `Đã xóa thành công!`);
     }else{
         
@@ -189,5 +190,5 @@ module.exports.deleteItem = async (req, res) =>{
     
     req.flash('success', `Đã xóa thành công!`);
 
-    res.redirect("back");
+    res.redirect(`${systemConfig.prefixAdmin}/users`);
 }
