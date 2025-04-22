@@ -310,9 +310,25 @@ module.exports.otpPasswordPost = async (req, res) =>{
 
 // [GET] /user/password/reset
 module.exports.resetPassword = async (req, res) =>{
-    res.render("client/pages/user/reset-password", {
-        pageTitle: "Nhập mật khẩu mới"
-    })
+    try{
+        const email = res.locals.user.email;
+        const result = await ForgotPassword.findOne({
+            email: email
+        })
+
+        if(!result){
+            req.flash("error", "Đã có lỗi xảy ra. Vui lòng thử lại sau!");
+            res.redirect("back");
+            return;
+        }
+        res.render("client/pages/user/reset-password", {
+            pageTitle: "Nhập mật khẩu mới"
+        })
+    }catch(error){
+        req.flash("error", "Đã có lỗi xảy ra. Vui lòng thử lại sau!");
+        res.redirect(`back`);
+        return;
+    }
 }
 
 // [POST] /user/password/reset

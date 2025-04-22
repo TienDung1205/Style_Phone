@@ -1,8 +1,7 @@
 extends ../../layouts/default
 include ../../mixins/box-head.pug
 
-block main 
-    +alert-error(5000)
+block main
 
     .product-detail
         .container.my-5
@@ -53,7 +52,7 @@ block main
                         br
                         form(
                             id="buy-now-form"
-                            action=`/checkout/${product.id}`
+                            action=`/checkout/buy/${product.id}`
                             method="GET"
                         )
                             input(type="hidden" name="quantity" id="buy-now-quantity")

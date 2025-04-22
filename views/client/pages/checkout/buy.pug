@@ -2,7 +2,6 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
 block main
-    +alert-error(5000)
 
     .container.my-3
         .row
@@ -34,7 +33,7 @@ block main
             .col-12
                 .card.p-4.my-4 
                     form.prevent-double-submit(
-                        action="/checkout/buy-now/order"
+                        action="/checkout/buy"
                         method="POST"
                     )
                         div(class="form-group")

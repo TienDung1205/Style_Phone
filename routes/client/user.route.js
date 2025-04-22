@@ -33,7 +33,7 @@ router.get('/logout', controller.logout);
 
     router.post('/password/otp', validate.otpPost, controller.otpPasswordPost);
 
-router.get('/password/reset', authMiddleware.requireAuth, controller.resetPassword);
+router.get('/password/reset', controller.resetPassword);
 
 router.post('/password/reset', validate.resetPasswordPost, controller.resetPasswordPost);
 

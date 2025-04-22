@@ -6,6 +6,10 @@ const generateHelper = require("../../helpers/generate");
 
 const productsHelper = require("../../helpers/products");
 
+const limitQuantity = 3;
+const limitTotalPrice = 70000000;  // Giới hạn tổng giá trị đơn hàng
+const formattedLimit = limitTotalPrice.toLocaleString("vi-VN") + "đ";
+
 //[GET] /checkout/
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId;
@@ -23,6 +27,12 @@ module.exports.index = async (req, res) => {
                 status: "active"
             }).select("title thumbnail slug price discountPercentage");
 
+            if(item.quantity > limitQuantity) {
+                req.flash("error", `Mỗi sản phẩm chỉ được mua tối đa ${limitQuantity} sản phẩm`);
+                res.redirect("/cart");
+                return;
+            }
+
             productInfo.newPrice = productsHelper.newPriceProduct(productInfo)
 
             item.productInfo = productInfo;
@@ -32,6 +42,12 @@ module.exports.index = async (req, res) => {
     }
 
     cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    if(cart.totalPrice > limitTotalPrice) {
+        req.flash("error", `Giá trị đơn hàng không được vượt quá ${formattedLimit}`);
+        res.redirect("/cart");
+        return;
+    }
 
     res.render("client/pages/checkout/index.pug", {
         pageTitle: "Đặt hàng",
@@ -165,7 +181,7 @@ module.exports.success = async (req, res) => {
 }
 
 //[GET] /checkout/:productId
-module.exports.buyNow = async (req, res) => {
+module.exports.buy = async (req, res) => {
     try {
         const productId = req.params.productId;
         let quantity = parseInt(req.query.quantity, 10);
@@ -200,8 +216,22 @@ module.exports.buyNow = async (req, res) => {
         // Tính giá mới của sản phẩm
         product.newPrice = productsHelper.newPriceProduct(product);
 
+        const totalPrice = product.newPrice * quantity;
+
+        if(totalPrice > limitTotalPrice) {
+            req.flash("error", `Giá trị đơn hàng không được vượt quá ${formattedLimit}`);
+            res.redirect("back");
+            return;
+        }
+
+        if(quantity > limitQuantity){
+            req.flash("error", `Sản phẩm chỉ được mua tối đa ${limitQuantity} sản phẩm`);
+            res.redirect("back");
+            return;
+        }
+
         // Nếu hợp lệ, chuyển đến giao diện thanh toán
-        res.render("client/pages/checkout/buy-now.pug", {
+        res.render("client/pages/checkout/buy.pug", {
             pageTitle: "Đặt hàng ngay",
             product,
             quantity: quantity,
@@ -213,8 +243,8 @@ module.exports.buyNow = async (req, res) => {
     }
 };
 
-//[POST] /checkout//buy-now/order
-module.exports.buyNowOrder = async (req, res) => {
+//[POST] /checkout/buy
+module.exports.buyPost = async (req, res) => {
     try {
         const { productId, quantity, fullName, phone, address } = req.body;
 
