@@ -12,7 +12,7 @@ module.exports.login = async (req, res) =>{
     }
     else{
         res.render("admin/pages/auth/login.pug", {
-            pageTitle:"Trang đăng nhập"
+            pageTitle:"Admin đăng nhập"
         });
     }
 }

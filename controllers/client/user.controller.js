@@ -344,7 +344,8 @@ module.exports.resetPasswordPost = async (req, res) =>{
     })
 
     req.flash("success", "Đổi mật khẩu thành công!");
-    res.clearCookie(`tokenUser`);
+    // res.clearCookie(`tokenUser`);
+    // res.redirect("/user/login");
     res.redirect("/user/login");
 }
 
