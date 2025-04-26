@@ -23,7 +23,7 @@ block main
           | Để biết thêm chi tiết, tư vấn viên của chúng tôi sẽ hỗ trợ bạn
           br
           br
-          a#contact-now.btn-contact-now(href="https://www.facebook.com/profile.php?id=100069255010487", target="_blank") Liên hệ ngay
+          a#contact-now.btn-contact-now(href=`${settingGeneral.facebook}`, target="_blank") Liên hệ ngay
 
         .col-lg-6.text-center
           img.img-fluid.rounded(src="https://cdn.daca.vn/media/anh/bg-intro.svg", alt="About Us", style="max-width: 80%;")
@@ -54,9 +54,9 @@ block main
               if index == 0
                 p.text-muted.mb-0(style="color: #5B7F72;") Hơn 1,000 mẫu mã từ các thương hiệu lớn như Apple, Samsung, Xiaomi, v.v.
               else if index == 1
-                p.text-muted.mb-0(style="color: #5B7F72;") Giao hàng miễn phí cho đơn hàng từ 5,000,000đ , nhận hàng trong 48h.
+                p.text-muted.mb-0(style="color: #5B7F72;") Giao hàng miễn phí cho đơn hàng từ 5,000,000đ , nhận hàng trong 72h.
               else if index == 2
-                p.text-muted.mb-0(style="color: #5B7F72;") Bảo mật thông tin, hỗ trợ 1 phương thức thanh toán.
+                p.text-muted.mb-0(style="color: #5B7F72;") Bảo mật thông tin, hỗ trợ các phương thức thanh toán.
               else if index == 3
                 p.text-muted.mb-0(style="color: #5B7F72;") Sản phẩm chính hãng 100% từ các nhà thương hiệu điện thoại uy tín trên thế giới.
   //- Why Choose Us Section End

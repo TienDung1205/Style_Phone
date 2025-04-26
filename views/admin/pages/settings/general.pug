@@ -51,11 +51,20 @@ block main
         div(class="form-group")
             label(for="phone") Số điện thoại
             input(
-                type="text"
+                type="tel"
                 class="form-control"
                 id="phone"
                 name="phone"
                 value= settingGeneral ? settingGeneral.phone : ""
+            )
+        div(class="form-group")
+            label(for="facebook") Facebook
+            input(
+                type="text"
+                class="form-control"
+                id="facebook"
+                name="facebook"
+                value= settingGeneral ? settingGeneral.facebook : ""
             )
         div(class="form-group")
             label(for="address") Địa chỉ
