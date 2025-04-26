@@ -26,11 +26,11 @@
 
  /* Footer */
 .footer{
-    background: #333;
-    color: #ffffff;
-    text-align: center;
-    padding: 10px;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
 }
+
 /* End Footer */
 
 /* box-head */
@@ -299,4 +299,36 @@
 .nav-item .dropdown-item:hover {
     background-color: #e9ecef; /* Màu nền khi hover */
     color: #000; /* Màu chữ khi hover */
+}
+
+/* Ẩn thanh trượt ngang mặc định */
+body {
+    overflow-x: hidden; /* Ẩn thanh trượt ngang */
+}
+
+/* Đảm bảo body và html chiếm toàn bộ chiều cao */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Đặt block main chiếm toàn bộ không gian còn lại */
+body > .container-fluid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Footer chỉ xuất hiện ở cuối */
+footer.footer {
+    display: none; /* Ẩn footer mặc định */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out; /* Hiệu ứng mượt mà */
+}
+
+footer.footer.show {
+    display: block; /* Hiển thị footer */
+    opacity: 1;
 }

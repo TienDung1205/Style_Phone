@@ -68,7 +68,7 @@ block main
                                         width="100px" 
                                         height="auto"
                                     )
-                                td #{item.fullName}
+                                td.text-nowrap #{item.fullName}
                                 td #{item.email}
                                 td #{item.phone}
                                 //- td #{item.address}
@@ -90,7 +90,7 @@ block main
                                             class="badge badge-danger"
                                         ) Dừng hoạt động
 
-                                td
+                                td.text-nowrap
                                     //- a(
                                     //-     href=`${prefixAdmin}/accounts/detail/${item.id}`
                                     //-     class="btn btn-primary btn-sm mr-1"

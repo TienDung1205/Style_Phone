@@ -1,0 +1,62 @@
+extends ../../layouts/default.pug
+
+block main
+  //- Link CSS riêng
+  link(rel="stylesheet", href="/css/about.css")
+
+  //- About Section Start
+  .container-fluid.py-5(style="background-color: #f2f4f7;")
+    .container.py-5
+      .row.g-5.align-items-center
+        .col-lg-6
+          h2.mb-3(style="color: #8A6D4B;") Giới Thiệu Về Chúng Tôi
+          p(style="")
+            p.
+              Tại StylePhone, chúng tôi mang đến cho bạn bộ sưu tập điện thoại đa dạng từ những thương hiệu hàng đầu thế giới. 
+              Chúng tôi tin rằng điện thoại không chỉ là công cụ liên lạc mà còn là phong cách sống, 
+              là cầu nối giữa con người và thế giới số hiện đại.
+            p.
+              Với sứ mệnh nâng tầm trải nghiệm công nghệ và đáp ứng nhu cầu ngày càng cao của khách hàng, 
+              StylePhone cam kết cung cấp các sản phẩm điện thoại chính hãng, chất lượng vượt trội, 
+              liên tục cập nhật những mẫu mới nhất cùng dịch vụ chăm sóc tận tâm.
+
+          | Để biết thêm chi tiết, tư vấn viên của chúng tôi sẽ hỗ trợ bạn
+          br
+          br
+          a#contact-now.btn-contact-now(href="https://www.facebook.com/profile.php?id=100069255010487", target="_blank") Liên hệ ngay
+
+        .col-lg-6.text-center
+          img.img-fluid.rounded(src="https://cdn.daca.vn/media/anh/bg-intro.svg", alt="About Us", style="max-width: 80%;")
+
+  //- About Section End
+
+  //- Why Choose Us Section Start
+  .container-fluid.py-5(style="background-color: #f8f9fa;")
+    .container.py-5
+      .text-center.mb-5
+        h2.section-title.mb-3(style="color: #8A6D4B;") Lý Do Chọn Chúng Tôi
+        | StylePhone không chỉ đơn thuần là một cửa hàng điện thoại mà còn là nơi kết nối công nghệ và phong cách sống.
+
+      .row.g-4
+        each item, index in ["Đa dạng mẫu mã", "Giao Hàng Nhanh", "Thanh Toán An Toàn", "Uy Tín Và Chất Lượng"]
+          .col-md-6.col-lg-3
+            .why-choose-us-item.text-center.rounded.p-4.bg-white.shadow-sm.h-100
+              .icon.mb-3
+                if index == 0
+                  i.fas.fa-book.fa-3x(style="color: #8A6D4B;")
+                else if index == 1
+                  i.fas.fa-truck.fa-3x(style="color: #8A6D4B;")
+                else if index == 2
+                  i.fas.fa-shield-alt.fa-3x(style="color: #8A6D4B;")
+                else if index == 3
+                  i.fas.fa-thumbs-up.fa-3x(style="color: #8A6D4B;")
+              h5(style="color: #8A6D4B;") #{item}
+              if index == 0
+                p.text-muted.mb-0(style="color: #5B7F72;") Hơn 1,000 mẫu mã từ các thương hiệu lớn như Apple, Samsung, Xiaomi, v.v.
+              else if index == 1
+                p.text-muted.mb-0(style="color: #5B7F72;") Giao hàng miễn phí cho đơn hàng từ 5,000,000đ , nhận hàng trong 48h.
+              else if index == 2
+                p.text-muted.mb-0(style="color: #5B7F72;") Bảo mật thông tin, hỗ trợ 1 phương thức thanh toán.
+              else if index == 3
+                p.text-muted.mb-0(style="color: #5B7F72;") Sản phẩm chính hãng 100% từ các nhà thương hiệu điện thoại uy tín trên thế giới.
+  //- Why Choose Us Section End

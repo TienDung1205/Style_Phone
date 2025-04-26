@@ -1,47 +1,61 @@
 extends ../../layouts/default
 include ../../mixins/alert.pug
 
-block main 
-    +alert-error(5000)
-    +alert-success(3000)
+block main
+  +alert-error(5000)
+  +alert-success(3000)
 
-    h1(class="mb-4") Trang tổng quan
-    .row.mt-4
-        .col-5
-            a(href=`${prefixAdmin}/products-category`)
-                .card.mb-3
-                    .card-header Danh mục sản phẩm 
-                    .card-body 
-                        p Số lượng: <b>#{statistic.productCategory.total}</b>
-                        p Hoạt động: <b>#{statistic.productCategory.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.productCategory.inactive}</b>
-                        p Đã xóa: <b>#{statistic.productCategory.deleted}</b>
-        .col-5
-            a(href=`${prefixAdmin}/users`)
-                .card.mb-3
-                    .card-header Danh sách khách hàng
-                    .card-body 
-                        p Số lượng: <b>#{statistic.user.total}</b>
-                        p Hoạt động: <b>#{statistic.user.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
-                        p Đã xóa: <b>#{statistic.user.deleted}</b>
-        .col-5
-            a(href=`${prefixAdmin}/products`)
-                .card.mb-3
-                    .card-header Danh sách sản phẩm 
-                    .card-body 
-                        p Số lượng: <b>#{statistic.product.total}</b>
-                        p Nổi bật: <b>#{statistic.product.featured}</b>
-                        p Hoạt động: <b>#{statistic.product.active}</b>
-                        p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
-                        p Đã xóa: <b>#{statistic.product.deleted}</b>
-        .col-5
-            a(href=`${prefixAdmin}/orders`)
-                .card.mb-3
-                    .card-header Danh sách đặt hàng
-                    .card-body
-                        p Số lượng: <b>#{statistic.order.total}</b>
-                        p Thành công: <b>#{statistic.order.success}</b>
-                        p Đang vận chuyển: <b>#{statistic.order.delivering}</b>
-                        p Đang xử lý: <b>#{statistic.order.processing}</b>
-                        p Đã hủy: <b>#{statistic.order.canceled}</b>
+  h1.mb-4 Trang tổng quan
+
+  .row.gx-4
+    .col-xl-3.col-md-6
+      a.card.bg-primary.text-white.mb-4(href=`${prefixAdmin}/products-category`)
+        .card-body
+          .d-flex.align-items-center.justify-content-between
+            div
+              .small.text-white(style="font-weight: bold;") Danh mục sản phẩm
+              .h5.mb-0 #{statistic.productCategory.total}
+            i.fas.fa-th-list.fa-2x.text-gray-300
+        .card-footer.d-flex.align-items-center.justify-content-between
+          | Xem chi tiết
+          .small.text-white
+            i.fas.fa-angle-right
+
+    .col-xl-3.col-md-6
+      a.card.bg-success.text-white.mb-4(href=`${prefixAdmin}/products`)
+        .card-body
+          .d-flex.align-items-center.justify-content-between
+            div
+              .small.text-white(style="font-weight: bold;") Sản phẩm hoạt động
+              .h5.mb-0 #{statistic.product.active}
+            i.fas.fa-box.fa-2x.text-gray-300
+        .card-footer.d-flex.align-items-center.justify-content-between
+          | Xem chi tiết
+          .small.text-white
+            i.fas.fa-angle-right
+
+    .col-xl-3.col-md-6
+      a.card.bg-warning.text-white.mb-4(href=`${prefixAdmin}/users`)
+        .card-body
+          .d-flex.align-items-center.justify-content-between
+            div
+              .small.text-white(style="font-weight: bold;") Khách hàng
+              .h5.mb-0 #{statistic.user.total}
+            i.fas.fa-user-friends.fa-2x.text-gray-300
+        .card-footer.d-flex.align-items-center.justify-content-between
+          | Xem chi tiết
+          .small.text-white
+            i.fas.fa-angle-right
+
+    .col-xl-3.col-md-6
+      a.card.bg-info.text-white.mb-4(href=`${prefixAdmin}/orders`)
+        .card-body
+          .d-flex.align-items-center.justify-content-between
+            div
+              .small.text-white(style="font-weight: bold;") Đơn hàng mới
+              .h5.mb-0 #{statistic.order.processing}
+            i.fas.fa-shopping-cart.fa-2x.text-gray-300
+        .card-footer.d-flex.align-items-center.justify-content-between
+          | Xem chi tiết
+          .small.text-white
+            i.fas.fa-angle-right

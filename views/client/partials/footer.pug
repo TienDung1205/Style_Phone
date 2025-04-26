@@ -1,3 +1,49 @@
-//- footer.footer.
-//-     #{settingGeneral.copyright}
-    
+//- footer.pug
+
+footer.footer
+  //- Footer Start
+  .container-fluid.bg-footer.text-white-50.footer.pt-5.mt-5(style="background-color: #2c3e50;")
+    .container.py-5
+      //- .pb-4.mb-4(style="border-bottom: 1px solid rgba(255, 255, 255, 0.3);")
+      //-   .row.g-4
+      //-     .col-lg-3
+      //-       h1.text-light.mb-0 StylePhone
+      //-       p Chất lượng là ưu tiên hàng đầu
+
+      .row.g-5
+        .col-lg-4.col-md-6
+          .footer-item
+            h4.text-light.mb-3 Về Chúng Tôi
+            p StylePhone cung cấp điện thoại uy tín và chất lượng từ khắp nơi trên thế giới. Đảm bảo điện thoại chính hãng với giá cả hợp lý.
+            p.text-light Địa chỉ: #{settingGeneral.address}
+        .col-lg-4.col-md-6
+          .d-flex.flex-column.text-start.footer-item
+            h4.text-light.mb-3 Thông Tin Cửa Hàng
+            a.text-light.mb-2(href="/about") Giới thiệu
+            a.text-light.mb-2(href="/about") Chính sách bảo mật
+            a.text-light(href="/about") Điều khoản dịch vụ
+        //- .col-lg-3.col-md-6
+        //-   .d-flex.flex-column.text-start.footer-item
+        //-     h4.text-light.mb-3 Tài Khoản
+        //-     a.text-muted.mb-2(href="/user/login") Đăng nhập
+        //-     a.text-muted.mb-2(href="/user/register") Đăng ký
+        //-     a.text-muted(href="/cart") Giỏ hàng
+
+        .col-lg-4.col-md-6
+          .footer-item
+            h4.text-light.mb-3 Liên Hệ
+            p.text-light Hotline: #{settingGeneral.phone}
+            p.text-light
+              | Facebook: 
+              a(href="https://www.facebook.com/profile.php?id=100069255010487", target="_blank", style="color: #27ae60;") Theo dõi tại đây
+            p.text-light Email: #{settingGeneral.email}
+
+  //- Copyright Start
+  .container-fluid.bg-footer.copyright.py-4(style="background-color: #34495e;")
+    .container
+      .row
+        .col-md-12.text-center.text-md-start.mb-3.mb-md-0
+          span.text-light
+            //- a(href="#", target="_blank", style="color: #27ae60;")
+            //- i.fas.fa-copyright.text-light.me-2
+            | #{settingGeneral.copyright}

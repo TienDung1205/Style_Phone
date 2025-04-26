@@ -40,10 +40,12 @@
     background: #323232;
     color: #fff;
     min-height: calc(100vh - 56px);
+    overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung quá dài */
 }
 .body .main{
     flex: 1;
     margin-left: 16px;
+    overflow-x: hidden; /* Ẩn thanh trượt ngang */
 }
 
 
@@ -123,4 +125,31 @@
 .main nav{
     display: flex;
     justify-content: center;
+}
+
+/* Đảm bảo các phần tử trong layout không vượt quá chiều rộng */
+.container-fluid {
+    max-width: 100%; /* Đảm bảo container không vượt quá chiều rộng */
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.header .nav-link i {
+    color: #fff; /* Màu trắng cho icon */
+    transition: color 0.3s ease;
+}
+
+.header .nav-link:hover i {
+    color: #007bff; /* Màu xanh khi hover */
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

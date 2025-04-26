@@ -149,3 +149,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 // End prevent-double-click
+
+// Show Footer on Scroll
+document.addEventListener('DOMContentLoaded', function () {
+    const footer = document.querySelector('footer.footer'); // Định nghĩa footer
+
+    if (!footer) {
+        // console.error('Footer element not found!');
+        return;
+    }
+
+    window.addEventListener('scroll', function () {
+        // Kiểm tra nếu người dùng kéo xuống cuối trang
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            footer.classList.add('show'); // Hiển thị footer
+        } else {
+            footer.classList.remove('show'); // Ẩn footer
+        }
+    });
+});
+// End Show Footer on Scroll

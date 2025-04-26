@@ -1,0 +1,62 @@
+/* Tư Vấn Viên Button Styling */
+.btn-advisor {
+    background-color: #2C3E50;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    position: relative;
+    text-decoration: none;
+}
+
+.btn-advisor:hover {
+    background-color: #34495E;
+    box-shadow: 0 10px 20px rgba(44, 62, 80, 0.6);
+    transform: translateY(-3px);
+}
+
+.btn-advisor::after {
+    content: 'Nhấn để tìm hiểu thêm!';
+    position: absolute;
+    top: -30px;
+    right: 10px;
+    background-color: #83c341;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-advisor:hover::after {
+    opacity: 1;
+}
+
+/* Liên Hệ Ngay Button Styling */
+.btn-contact-now {
+    display: inline-block;
+    background: linear-gradient(90deg, #8BC34A, #2C3E50);
+    color: #fff;
+    padding: 12px 35px;
+    font-size: 1.1em;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(44, 62, 80, 0.4);
+    animation: pulse 1.5s infinite;
+}
+
+.btn-contact-now:hover {
+    background: linear-gradient(90deg, #2C3E50, #8BC34A);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(44, 62, 80, 0.6);
+}
+
+/* Pulse Animation for Contact Now Button */
+@keyframes pulse {
+    0% { box-shadow: 0 0 8px rgba(44, 62, 80, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(44, 62, 80, 0.8); }
+    100% { box-shadow: 0 0 8px rgba(44, 62, 80, 0.4); }
+}
