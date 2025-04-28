@@ -17,7 +17,7 @@ header.header
                             a(href="/products") Sản phẩm
                                 +sub-menu(layoutProductsCategory, pathProduct)
                         li
-                            a(href="/about") Giới thiệu
+                            a(href="/about") Liên hệ
             .col-3
                 form(
                         class="text-right"
@@ -51,7 +51,7 @@ header.header
                                     i(class="fas fa-user user-icon")
                                     i(class="fas fa-check-circle check-icon")
                                 .dropdown-menu(aria-labelledby="accountDropdown")
-                                    a.dropdown-item(href="/user/info") Tài khoản của tôi
+                                    a.dropdown-item(href="/user/edit") Thông tin cá nhân
                                     a.dropdown-item(href="/user/order") Đơn hàng của tôi
                                     a.dropdown-item(href="/user/change/password") Đổi mật khẩu
                                     a.dropdown-item(href="/user/logout") Đăng xuất
@@ -62,3 +62,4 @@ header.header
                                 .dropdown-menu(aria-labelledby="accountDropdown")
                                     a.dropdown-item(href="/user/login") Đăng nhập
                                     a.dropdown-item(href="/user/register") Đăng ký
+                                    a.dropdown-item(href="/user/password/forgot") Quên mật khẩu
