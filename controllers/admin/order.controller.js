@@ -33,8 +33,7 @@ module.exports.index = async (req, res) =>{
         find.$or = [
             { code: objectSearch.regex },
             { "userInfo.fullName": objectSearch.regex },
-            { "userInfo.phone": objectSearch.regex },
-            { "userInfo.address": objectSearch.regex }
+            { "userInfo.phone": objectSearch.regex }
         ];
     }
     // End Search

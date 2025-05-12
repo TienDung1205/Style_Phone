@@ -7,30 +7,17 @@ module.exports.dashboard = async (req, res) => {
 
     const statistic = {
         productCategory:{
-            total: await ProductCategory.countDocuments(),
-            active: await ProductCategory.countDocuments({deleted: false, status: "active"}),
-            inactive: await ProductCategory.countDocuments({deleted: false, status: "inactive"}),
-            deleted: await ProductCategory.countDocuments({deleted: true})
+            total: await ProductCategory.countDocuments({deleted: false})
         },
         product:{
-            total: await Product.countDocuments(),
-            active: await Product.countDocuments({deleted: false, status: "active"}),
-            inactive: await Product.countDocuments({deleted: false, status: "inactive"}),
-            featured: await Product.countDocuments({deleted: false, featured: "1"}),
-            deleted: await Product.countDocuments({deleted: true})
+            total: await Product.countDocuments({deleted: false}),
+            active: await Product.countDocuments({deleted: false, status: "active"})
         },
         user:{
-            total: await User.countDocuments(),
-            active: await User.countDocuments({deleted: false, status: "active"}),
-            inactive: await User.countDocuments({deleted: false, status: "inactive"}),
-            deleted: await User.countDocuments({deleted: true})
+            total: await User.countDocuments()
         },
         order:{
-            total: await Order.countDocuments(),
-            success: await Order.countDocuments({status: "success"}),
-            delivering: await Order.countDocuments({status: "delivering"}),
-            processing: await Order.countDocuments({status: "processing"}),
-            canceled: await Order.countDocuments({status: "canceled"})
+            processing: await Order.countDocuments({status: "processing"})
         }
     }
 

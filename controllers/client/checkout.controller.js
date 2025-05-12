@@ -6,10 +6,6 @@ const generateHelper = require("../../helpers/generate");
 
 const productsHelper = require("../../helpers/products");
 
-const limitQuantity = 3;
-const limitTotalPrice = 70000000;  // Giới hạn tổng giá trị đơn hàng
-const formattedLimit = limitTotalPrice.toLocaleString("vi-VN") + "đ";
-
 //[GET] /checkout/
 module.exports.index = async (req, res) => {
     const cartId = req.cookies.cartId;
@@ -27,8 +23,8 @@ module.exports.index = async (req, res) => {
                 status: "active"
             }).select("title thumbnail slug price discountPercentage");
 
-            if(item.quantity > limitQuantity) {
-                req.flash("error", `Mỗi sản phẩm chỉ được mua tối đa ${limitQuantity} sản phẩm`);
+            if(item.quantity > res.locals.settingGeneral.limitQuantity) {
+                req.flash("error", `Mỗi sản phẩm chỉ được mua tối đa ${res.locals.settingGeneral.limitQuantity} sản phẩm`);
                 res.redirect("/cart");
                 return;
             }
@@ -43,7 +39,9 @@ module.exports.index = async (req, res) => {
 
     cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
 
-    if(cart.totalPrice > limitTotalPrice) {
+    const formattedLimit = res.locals.settingGeneral.limitTotalPrice.toLocaleString("vi-VN") + "đ";
+
+    if(cart.totalPrice > res.locals.settingGeneral.limitTotalPrice) {
         req.flash("error", `Giá trị đơn hàng không được vượt quá ${formattedLimit}`);
         res.redirect("/cart");
         return;
@@ -206,7 +204,7 @@ module.exports.buy = async (req, res) => {
         // Kiểm tra số lượng yêu cầu
         if (quantity > product.stock) {
             if (product.stock == 0) {
-                req.flash("error", `Sản phẩm tạm hết`);  
+                req.flash("error", `Sản phẩm tạm hết`);
                 res.redirect("back");
                 return;
             }
@@ -218,14 +216,16 @@ module.exports.buy = async (req, res) => {
 
         const totalPrice = product.newPrice * quantity;
 
-        if(totalPrice > limitTotalPrice) {
-            req.flash("error", `Giá trị đơn hàng không được vượt quá ${formattedLimit}`);
+        const formattedLimit = res.locals.settingGeneral.limitTotalPrice.toLocaleString("vi-VN") + "đ";
+
+        if(quantity > res.locals.settingGeneral.limitQuantity){
+            req.flash("error", `Sản phẩm chỉ được mua tối đa ${res.locals.settingGeneral.limitQuantity} sản phẩm`);
             res.redirect("back");
             return;
         }
 
-        if(quantity > limitQuantity){
-            req.flash("error", `Sản phẩm chỉ được mua tối đa ${limitQuantity} sản phẩm`);
+        if(totalPrice > res.locals.settingGeneral.limitTotalPrice) {
+            req.flash("error", `Giá trị đơn hàng không được vượt quá ${formattedLimit}`);
             res.redirect("back");
             return;
         }

@@ -4,7 +4,12 @@ include ../../mixins/product-layout.pug
 
 block main 
     block main
-        .container.my-3
-            .row
-                .col-12
-                    +box-head(pageTitle)
+         .container-fluid.error-page
+            .row.justify-content-center
+                .col-md-8
+                    .error-content.text-center
+                        h1 404 Not Found
+                        p Xin lỗi, chúng tôi không thể tìm thấy trang bạn yêu cầu.
+                        p Có thể trang đã bị xóa hoặc đường dẫn không còn chính xác.
+                        p Hãy thử quay lại trang chủ hoặc kiểm tra lại địa chỉ URL.
+                        a.btn-home(href="/") Quay lại trang chủ

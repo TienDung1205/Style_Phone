@@ -8,7 +8,9 @@ const settingGeneralSchema = new mongoose.Schema(
         email: String,
         address: String,
         copyright: String,
-        facebook: String
+        facebook: String,
+        limitQuantity: Number,
+        limitTotalPrice: Number
     },
     {
         timestamps: true

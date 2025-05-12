@@ -332,3 +332,19 @@ footer.footer.show {
     display: block; /* Hiển thị footer */
     opacity: 1;
 }
+
+.error-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.error-content h1 {
+    font-size: 100px;
+    color: red;
+    font-weight: bold;
+}
+.error-content p {
+    font-size: 18px;
+    color: #495057;
+}

@@ -85,6 +85,30 @@ block main
                 value= settingGeneral ? settingGeneral.copyright : ""
             )
         div(class="form-group")
+            label(for="limitQuantity") Số lượng sản phẩm tối đa
+            input(
+                type="number"
+                class="form-control"
+                id="limitQuantity"
+                name="limitQuantity"
+                value= settingGeneral ? settingGeneral.limitQuantity : ""
+                min="0"
+            )
+        if(settingGeneral.limitTotalPrice)
+            div(class="mb-4")
+                span Số tiền tối đa :
+                span(class="text-success font-weight-bold fs-6 ml-2") #{settingGeneral.limitTotalPrice.toLocaleString('vi-VN')}đ
+        div(class="form-group")
+            label(for="limitTotalPrice") Thay đối số tiền tối đa:
+            input(
+                type="number"
+                class="form-control"
+                id="limitTotalPrice"
+                name="limitTotalPrice"
+                value= settingGeneral ? settingGeneral.limitTotalPrice : ""
+                min="0"
+            )
+        div(class="form-group")
             button(
                 type="submit"
                 class="btn btn-primary"
