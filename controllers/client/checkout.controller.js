@@ -124,8 +124,8 @@ module.exports.order = async (req, res) => {
             products: updatedProducts,
         };
 
-        if (cart.user_id) {
-            orderInfo.user_id = cart.user_id;
+        if (res.locals.user) {
+            orderInfo.user_id = res.locals.user._id;
         }
 
         const order = new Order(orderInfo);
@@ -146,7 +146,6 @@ module.exports.order = async (req, res) => {
         res.redirect(`/checkout/success/${order.id}`);
 
     } catch (error) {
-        console.error("Lỗi trong quá trình xử lý đơn hàng:", error);
         req.flash("error", "Đã có lỗi xảy ra trong quá trình xử lý đơn hàng. Vui lòng thử lại sau!");
         res.redirect("back");
     }
@@ -154,28 +153,32 @@ module.exports.order = async (req, res) => {
 
 //[POST] /checkout/success/:orderId
 module.exports.success = async (req, res) => {
-    const order = await Order.findOne({
+    try{
+        const order = await Order.findOne({
         _id: req.params.orderId
-    })
+        })
 
-    for (const product of order.products) {
-        const productInfo = await Product.findOne({
-            _id : product.product_id
-        }).select("title thumbnail")
+        for (const product of order.products) {
+            const productInfo = await Product.findOne({
+                _id : product.product_id
+            }).select("title thumbnail")
 
-        product.productInfo = productInfo;
+            product.productInfo = productInfo;
 
-        product.newPrice = productsHelper.newPriceProduct(product);
+            product.newPrice = productsHelper.newPriceProduct(product);
 
-        product.totalPrice = product.newPrice * product.quantity;
+            product.totalPrice = product.newPrice * product.quantity;
+        }
+
+        order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice , 0)
+
+        res.render("client/pages/checkout/success.pug", {
+            pageTitle: "Đặt hàng thành công",
+            order: order
+        });
+    }catch (error) {
+        res.redirect("/");
     }
-
-    order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice , 0)
-
-    res.render("client/pages/checkout/success.pug", {
-        pageTitle: "Đặt hàng thành công",
-        order: order
-    });
 }
 
 //[GET] /checkout/:productId

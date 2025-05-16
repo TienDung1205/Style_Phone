@@ -208,18 +208,33 @@ module.exports.changeMulti = async (req, res) => {
 
 // [DELETE] /admin/orders/delete/:id
 module.exports.deleteItem = async (req, res) =>{
-    const id = req.params.id;
+    try{
+        const id = req.params.id;
 
-    await Order.updateOne({ _id: id}, {
-        deleted: true,
-        deletedAt: new Date()
-    });
+        const order = await Order.findOne({
+            _id: id
+        });
 
-    // await Order.deleteOne({ _id: id });
-    
-    req.flash('success', `Đã xóa thành công!`);
+        if(order.status !== "canceled"){
+            req.flash('error', `Không thể xóa đơn hàng đã được xử lý!`);
+            res.redirect("back");
+            return;
+        }     
 
-    res.redirect("back");
+        await Order.updateOne({ _id: id}, {
+            deleted: true,
+            deletedAt: new Date()
+        });
+
+        // await Order.deleteOne({ _id: id });
+        
+        req.flash('success', `Đã xóa thành công!`);
+
+        res.redirect("back");
+    }catch(error){  
+        req.flash('error', `Đã xảy ra lỗi!`);
+        res.redirect("back");
+    }
 }
 
 // [GET] /admin/products/orders/:id

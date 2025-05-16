@@ -6,6 +6,7 @@ const Cart = require("../../models/cart.model");
 const Order = require("../../models/order.model");
 const Product = require("../../models/product.model");
 
+const paginationHelper = require("../../helpers/pagination");
 const generateHelper = require("../../helpers/generate");
 const sendMailHelper = require("../../helpers/sendMail");
 const productsHelper = require("../../helpers/products");
@@ -411,54 +412,76 @@ module.exports.editPatch = async (req, res) =>{
 
 // [GET] /user/order
 module.exports.order = async (req, res) =>{
-    const id = res.locals.user.id;
-    const find = {
-        deleted: false,
-        user_id: id
-    }
-
-    const records = await Order.find(find)
-    .sort({ position: "desc"});
-
-    for (const record of records) {
-        if(record.user_id){
-            const user = await User.findOne({
-                _id: record.user_id
-            }).select("-password")
-
-            record.user = user;
+    try{
+        const id = res.locals.user.id;
+        const find = {
+            user_id: id
         }
 
-        if (record.products.length > 0) {
-            for (const item of record.products) {
-                item.newPrice = productsHelper.newPriceProduct(item);
+        // Pagination
+        const countOrders = await Order.countDocuments(find);
 
-                item.totalPrice = item.newPrice * item.quantity;
+        let objectPagination = paginationHelper(
+            {
+            limitItems: 8,
+            currentPage: 1
+            },
+            req.query,
+            countOrders
+        )
+
+        // End Pagination
+
+        const records = await Order.find(find)
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip)
+        .sort({ position: "desc"});
+
+        for (const record of records) {
+            if(record.user_id){
+                const user = await User.findOne({
+                    _id: record.user_id
+                }).select("-password")
+
+                record.user = user;
             }
+
+            if (record.products.length > 0) {
+                for (const item of record.products) {
+                    item.newPrice = productsHelper.newPriceProduct(item);
+
+                    item.totalPrice = item.newPrice * item.quantity;
+                }
+            }
+        
+            record.totalPrice = record.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+            const dateString = record.createdAt;
+            const date = new Date(dateString);
+
+            const formatter = new Intl.DateTimeFormat('vi-VN', {
+                timeZone: 'Asia/Ho_Chi_Minh',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+
+            record.purchaseDate = formatter.format(date);
+
         }
-    
-        record.totalPrice = record.products.reduce((sum, item) => sum + item.totalPrice, 0);
 
-        const dateString = record.createdAt;
-        const date = new Date(dateString);
-
-        const formatter = new Intl.DateTimeFormat('vi-VN', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
+        res.render("client/pages/user/order", {
+            pageTitle:"Đơn hàng của tôi",
+            records: records,
+            pagination: objectPagination
         });
-
-        record.purchaseDate = formatter.format(date);
-
+    }catch(error){
+        req.flash("error", `Đã có lỗi xảy ra. Vui lòng thử lại sau!`);
+        res.redirect(`/`);
+        return;
     }
-
-    res.render("client/pages/user/order", {
-        pageTitle:"Đơn hàng của tôi",
-        records: records
-    });
 }
 
 // [GET] /user/order/:id
@@ -466,7 +489,6 @@ module.exports.orderDetail = async (req, res) =>{
     try {
         const user_id = res.locals.user.id;
         const find = {
-            deleted: false,
             _id: req.params.id,
             user_id: user_id
         }

@@ -1,6 +1,7 @@
 extends ../../layouts/default
 include ../../mixins/box-head.pug
 include ../../mixins/alert.pug
+include ../../mixins/pagination.pug
 
 block main
 
@@ -31,7 +32,7 @@ block main
                     tbody 
                         each item, index in records
                             tr
-                                td #{index + 1}
+                                td #{pagination.limitItems * (pagination.currentPage-1) + (index + 1)}
                                 //- td #{item.code}
                                 //- td #{item.user ? (item.user.email ? item.user.email : "") : ""}
                                 td #{item.userInfo.fullName}
@@ -75,6 +76,12 @@ block main
                                             data-id = item.id
                                             button-canceled
                                         ) Hủy
+        br
+        hr
+        br
+        .row
+            .col-12.d-flex.justify-content-center
+                +pagination(pagination)
     
     form.prevent-double-submit(
         action=""
