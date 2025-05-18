@@ -59,9 +59,14 @@ block main
                             each item, index in order.products
                                 tr 
                                     td #{index+1}
-                                    td 
-                                        img(src=item.productInfo.thumbnail, alt=item.productInfo.title width="80px")
-                                    td #{item.productInfo.title}
+                                    if(item.productInfo)
+                                        td 
+                                            img(src=item.productInfo.thumbnail, alt=item.productInfo.title width="80px")
+                                        td #{item.productInfo.title}
+                                    else 
+                                        td 
+                                            img(src="", alt="No image" width="80px")
+                                        td No name
                                     td #{item.newPrice.toLocaleString('vi-VN')}đ
                                     td #{item.quantity}
                                     td #{item.totalPrice.toLocaleString('vi-VN')}đ

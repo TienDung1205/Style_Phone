@@ -55,7 +55,7 @@ module.exports.index = async (req, res) =>{
     const records = await Order.find(find)
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip)
-    .sort({ position: "desc"});
+    .sort({ createdAt: "desc"});
 
     for (const record of records) {
         if(record.user_id){
@@ -98,7 +98,7 @@ module.exports.index = async (req, res) =>{
     }
 
     res.render("admin/pages/orders/index.pug", {
-        pageTitle:"Quản lý đặt hàng",
+        pageTitle:"Quản lý đơn hàng",
         records: records,
         filterStatusOrder: filterStatusOrder,
         keyword: objectSearch.keyword,

@@ -435,7 +435,7 @@ module.exports.order = async (req, res) =>{
         const records = await Order.find(find)
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
-        .sort({ position: "desc"});
+        .sort({ createdAt: "desc"});
 
         for (const record of records) {
             if(record.user_id){
