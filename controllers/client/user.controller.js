@@ -14,7 +14,11 @@ const productsHelper = require("../../helpers/products");
 //[GET] /user/register
 module.exports.register = async (req, res) => {
     const tokenUser = req.cookies.tokenUser;
-    const user = await User.findOne({tokenUser: tokenUser});
+    const user = await User.findOne({
+        tokenUser: tokenUser,
+        status: "active",
+        deleted: false
+    });
     if(user){
         res.redirect(`/`);
     }
@@ -141,7 +145,11 @@ module.exports.otpRegisterPost = async (req, res) =>{
 //[GET] /user/login
 module.exports.login = async (req, res) => {
     const tokenUser = req.cookies.tokenUser;
-    const user = await User.findOne({tokenUser: tokenUser});
+    const user = await User.findOne({
+        tokenUser: tokenUser,
+        status: "active",
+        deleted: false
+    });
     if(user){
         res.redirect(`/`);
     }
@@ -205,6 +213,17 @@ module.exports.loginPost = async (req, res) => {
 
 // [GET] /user/logout
 module.exports.logout = async (req, res) =>{
+    const tokenUser = req.cookies.tokenUser;
+    const user = await User.findOne({tokenUser: tokenUser});
+    const newTokenUser = generateHelper.generateRandomString(30);
+    if(user){
+        await User.updateOne({
+            tokenUser: tokenUser
+        }, {
+            tokenUser: newTokenUser
+        });
+    }
+
     res.clearCookie(`tokenUser`);
     res.clearCookie(`cartId`);
     res.redirect(`/`);
@@ -213,7 +232,11 @@ module.exports.logout = async (req, res) =>{
 // [GET] /user/password/forgot
 module.exports.forgotPassword = async (req, res) =>{
     const tokenUser = req.cookies.tokenUser;
-    const user = await User.findOne({tokenUser: tokenUser});
+    const user = await User.findOne({
+        tokenUser: tokenUser,
+        status: "active",
+        deleted: false
+    }).select("-password");
     if(user){
         res.redirect(`/`);
     }

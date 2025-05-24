@@ -185,7 +185,13 @@ module.exports.changeMulti = async (req, res) => {
             if (order.status === "canceled" && type !== "canceled") {
                 for (const product of order.products) {
                     const productInfo = await Product.findOne({ _id: product.product_id }).select("stock");
-
+                    if(productInfo.stock < product.quantity){
+                        req.flash("error", `${productInfo.title} chỉ còn ${productInfo.stock} sản phẩm.`);
+                        return res.redirect("back");
+                    }
+                }
+                for (const product of order.products) {
+                    const productInfo = await Product.findOne({ _id: product.product_id }).select("stock");
                     const newStock = productInfo.stock - product.quantity;
                     await Product.updateOne(
                         { _id: product.product_id },

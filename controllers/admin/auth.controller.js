@@ -3,10 +3,16 @@ const Account = require("../../models/account.model");
 
 const systemConfig = require("../../config/system");
 
+const generateHelper = require("../../helpers/generate");
+
 // [GET] /admin/auth/login
 module.exports.login = async (req, res) =>{
     const token = req.cookies.token;
-    const user = await Account.findOne({token: token});
+    const user = await Account.findOne({
+        token: token,
+        status: "active",
+        deleted: false
+    });
     if(user){
         res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
     }
@@ -53,6 +59,12 @@ module.exports.loginPost = async (req, res) =>{
 
 // [GET] /admin/auth/logout
 module.exports.logout = async (req, res) =>{
+    const token = req.cookies.token;
+    const account = await Account.findOne({token: token});
+    if(account){
+        account.token = generateHelper.generateRandomString(30);
+        await account.save();
+    }
     res.clearCookie(`token`);
     res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
 }

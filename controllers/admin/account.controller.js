@@ -89,7 +89,7 @@ module.exports.createPost = async (req, res) =>{
         const record = new Account(req.body);
         record.token = generateHelper.generateRandomString(30);
         await record.save();
-        
+        req.flash("success", "Thêm mới tài khoản thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/accounts`);
     }
 

@@ -89,6 +89,8 @@ module.exports.createPost = async (req, res) =>{
         record.tokenUser = generateHelper.generateRandomString(30);
         await record.save();
         
+        req.flash("success", "Thêm mới khách hàng thành công!");
+
         res.redirect(`${systemConfig.prefixAdmin}/users`);
     }
 
